@@ -23,21 +23,16 @@ public class Product {
         this.stock = stock;
     }
 
-    // Modificar producto
-    public void modifyProduct(String name, String description, double salePrice, double purchasePrice) {
+    public void updateProduct(String name, Double salePrice) {
         this.name = name;
-        this.description = description;
         this.salePrice = salePrice;
-        this.purchasePrice = purchasePrice;
     }
 
-    // Modificar stock
     public void modifyStock(int quantity) {
-        this.stock += quantity;
+        stock += quantity;
     }
 
-    // Verificar stock mínimo
-    public boolean verifyMinimumStock() {
+    public boolean verifyStockMinimo() {
         return stock <= 5;
     }
 
@@ -46,47 +41,23 @@ public class Product {
         return idProduct;
     }
 
-    public void setIdProduct(int idProduct) {
-        this.idProduct = idProduct;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public double getSalePrice() {
         return salePrice;
-    }
-
-    public void setSalePrice(double salePrice) {
-        this.salePrice = salePrice;
     }
 
     public double getPurchasePrice() {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(double purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
     public int getStock() {
         return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 }

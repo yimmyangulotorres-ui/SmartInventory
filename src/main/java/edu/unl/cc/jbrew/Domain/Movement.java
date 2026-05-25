@@ -1,41 +1,67 @@
 package edu.unl.cc.jbrew.Domain;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Movement {
-
-    // Attributes
-    private int movementId;
-    private String movementType;
+    private int idMovement;
+    private MovementType movementType;
     private Date date;
     private String description;
+    private List<MovementDetail> detailList;
+    private double total;
 
-    // Empty constructor
     public Movement() {
+        detailList = new ArrayList<>();
     }
 
-    // Constructor with parameters
-    public Movement(int movementId, String movementType, Date date, String description) {
-        this.movementId = movementId;
-        this.movementType = movementType;
-        this.date = date;
-        this.description = description;
+    public void addItem(Product product, int quantity, double unitPrice) {
+        MovementDetail detail = new MovementDetail(detailList.size() + 1, product, quantity, unitPrice);
+        detailList.add(detail);
+    }
+
+    public void showMovement() {
+        System.out.println("===== MOVEMENT DATA =====");
+        System.out.println("Movement ID: " + idMovement);
+        System.out.println("Movement Type: " + movementType);
+        System.out.println("Date: " + date);
+        System.out.println("Description: " + description);
+        for (MovementDetail detail : detailList) {
+            System.out.println("Product: " + detail.getProduct().getName() + " | Quantity: " + detail.getQuantity() +
+                    " | Unit Price: " + detail.getUnitPrice() + " | Subtotal: " + detail.getSubtotal());
+        }
+    }
+
+    public void processMovement() {
+        for (MovementDetail detail : detailList) {
+            detail.getProduct().modifyStock(-detail.getQuantity());
+        }
+        calculateTotal();
+    }
+
+    public double calculateTotal() {
+        total = 0;
+        for (MovementDetail detail : detailList) {
+            total += detail.getSubtotal();
+        }
+        return total;
     }
 
     // Getters and Setters
-    public int getMovementId() {
-        return movementId;
+    public int getIdMovement() {
+        return idMovement;
     }
 
-    public void setMovementId(int movementId) {
-        this.movementId = movementId;
+    public void setIdMovement(int idMovement) {
+        this.idMovement = idMovement;
     }
 
-    public String getMovementType() {
+    public MovementType getMovementType() {
         return movementType;
     }
 
-    public void setMovementType(String movementType) {
+    public void setMovementType(MovementType movementType) {
         this.movementType = movementType;
     }
 
@@ -55,16 +81,19 @@ public class Movement {
         this.description = description;
     }
 
-    // UML methods
-    public void registerMovement() {
-        System.out.println("Movement registered successfully.");
+    public List<MovementDetail> getDetailList() {
+        return detailList;
     }
 
-    public void showMovement() {
-        System.out.println("===== MOVEMENT DATA =====");
-        System.out.println("Movement ID: " + movementId);
-        System.out.println("Movement Type: " + movementType);
-        System.out.println("Date: " + date);
-        System.out.println("Description: " + description);
+    public void setDetailList(List<MovementDetail> detailList) {
+        this.detailList = detailList;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 }

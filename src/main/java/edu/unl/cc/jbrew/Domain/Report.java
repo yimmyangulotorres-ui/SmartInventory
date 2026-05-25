@@ -4,47 +4,39 @@ import java.util.Date;
 
 public class Report {
 
-    private int idReport;
+    private int reportId;
     private String reportType;
     private Date generationDate;
 
-    public Report() {
-        generationDate = new Date();
-    }
-
-    public Report(int idReport, String reportType, Date generationDate) {
-        this.idReport = idReport;
+    public Report(int reportId, String reportType, Date generationDate) {
+        this.reportId = reportId;
         this.reportType = reportType;
         this.generationDate = generationDate;
     }
 
-    // Generar reporte de stock
-    public void generateStockReport() {
+    public void generateReportStock() {
         System.out.println("Generando reporte de stock...");
     }
 
-    // Generar reporte de ventas
-    public void generateSalesReport() {
+    public void generateReportSale() {
         System.out.println("Generando reporte de ventas...");
     }
 
-    // Generar reporte de movimientos
-    public void generateMovementReport() {
+    public void generateReportMovements() {
         System.out.println("Generando reporte de movimientos...");
     }
 
-    // Exportar reporte
     public void exportReport() {
-        System.out.println("Exportando reporte...");
+        System.out.println("Exportando reporte a archivo...");
     }
 
     // Getters y Setters
-    public int getIdReport() {
-        return idReport;
+    public int getReportId() {
+        return reportId;
     }
 
-    public void setIdReport(int idReport) {
-        this.idReport = idReport;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 
     public String getReportType() {
