@@ -6,13 +6,11 @@ import java.util.List;
 public class Category {
 
     private int idCategory;
-    private String description;
     private String name;
     private List<Product> productList;
 
-    public Category(int idCategory, String description, String name) {
+    public Category(int idCategory, String name) {
         this.idCategory = idCategory;
-        this.description = description;
         this.name = name;
         this.productList = new ArrayList<>();
     }
@@ -40,14 +38,6 @@ public class Category {
 
     public void setIdCategory(int idCategory) {
         this.idCategory = idCategory;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getName() {

@@ -71,7 +71,6 @@ public class View {
         for (Category category : inventory.showCategory()) {
             System.out.println("Category ID: " + category.getIdCategory());
             System.out.println("Name: " + category.getName());
-            System.out.println("Description: " + category.getDescription());
             System.out.println("----------------------------------------");
         }
     }
