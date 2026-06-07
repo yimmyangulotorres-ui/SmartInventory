@@ -40,7 +40,7 @@ public class Main {
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println("\n===== SISTEMA DE GESTIÓN DE INVENTARIO =====");
+            System.out.println("\n====== SISTEMA DE GESTIÓN DE INVENTARIO ======");
             System.out.println("1. Agregar Categoría");
             System.out.println("2. Agregar Producto");
             System.out.println("3. Ver Productos");
