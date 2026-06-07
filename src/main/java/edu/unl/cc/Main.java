@@ -1,19 +1,41 @@
 package edu.unl.cc;
 
-import edu.unl.cc.jbrew.Domain.*;
+import edu.unl.cc.jbrew.Domain.Inventory.Inventory;
+import edu.unl.cc.jbrew.Domain.Inventory.Product;
+import edu.unl.cc.jbrew.Domain.Inventory.Category;
+import edu.unl.cc.jbrew.Domain.Movements.Movement;
+import edu.unl.cc.jbrew.Domain.Movements.MovementType;
+import edu.unl.cc.jbrew.Domain.Movements.ProductMovement;
+import edu.unl.cc.jbrew.Domain.Invoice.SaleInvoice;
+import edu.unl.cc.jbrew.Domain.People.Supplier;
+import edu.unl.cc.jbrew.Domain.People.Customer;
+import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
+import edu.unl.cc.jbrew.Domain.Reports.StockAlert;
+import edu.unl.cc.jbrew.Domain.Reports.Report;
 import edu.unl.cc.jbrew.View.View;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static Inventory inventory = new Inventory();
     private static View view = new View();
+    private static List<Movement> movements = new ArrayList<>();
+    private static List<SaleInvoice> saleInvoices = new ArrayList<>();
+    private static List<Supplier> suppliers = new ArrayList<>();
+    private static List<Customer> customers = new ArrayList<>();
+    private static List<Kardex> kardexList = new ArrayList<>();
+    private static List<StockAlert> stockAlerts = new ArrayList<>();
     private static int productIdCounter = 1;
     private static int categoryIdCounter = 1;
     private static int supplierIdCounter = 1;
+    private static int customerIdCounter = 1;
     private static int movementIdCounter = 1;
-    private static int saleIdCounter = 1;
+    private static int kardexIdCounter = 1;
+    private static int alertIdCounter = 1;
+    private static int invoiceIdCounter = 1;
 
     public static void main(String[] args) {
         while (true) {
@@ -23,10 +45,14 @@ public class Main {
             System.out.println("3. Ver Productos");
             System.out.println("4. Ver Categorías");
             System.out.println("5. Buscar Producto");
-            System.out.println("6. Crear Movimiento (Venta/Reabastecimiento)");
+            System.out.println("6. Crear Movimiento (Entrada/Salida)");
             System.out.println("7. Registrar Venta");
             System.out.println("8. Agregar Proveedor");
-            System.out.println("9. Generar Reportes");
+            System.out.println("9. Agregar Cliente");
+            System.out.println("10. Ver Movimientos");
+            System.out.println("11. Ver Kardex");
+            System.out.println("12. Ver Alertas de Stock");
+            System.out.println("13. Generar Reportes");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
 
@@ -59,6 +85,18 @@ public class Main {
                     addSupplier();
                     break;
                 case 9:
+                    addCustomer();
+                    break;
+                case 10:
+                    viewMovements();
+                    break;
+                case 11:
+                    viewKardex();
+                    break;
+                case 12:
+                    viewStockAlerts();
+                    break;
+                case 13:
                     generateReports();
                     break;
                 case 0:
@@ -94,10 +132,22 @@ public class Main {
         double purchasePrice = scanner.nextDouble();
         System.out.print("Stock: ");
         int stock = scanner.nextInt();
+        System.out.print("Stock Mínimo: ");
+        int minStock = scanner.nextInt();
         scanner.nextLine();
 
-        Product product = new Product(productIdCounter++, name, description, salePrice, purchasePrice, stock);
+        Product product = new Product(productIdCounter++, name, description, salePrice, purchasePrice, stock, minStock);
         inventory.addProduct(product);
+        
+        // Check for stock alert
+        if (product.verifyStockMinimo()) {
+            StockAlert alert = product.generateStockAlert(alertIdCounter++);
+            if (alert != null) {
+                stockAlerts.add(alert);
+                System.out.println("Alerta de stock generada para el producto.");
+            }
+        }
+        
         System.out.println("Producto agregado exitosamente.");
     }
 
@@ -127,18 +177,15 @@ public class Main {
     private static void createMovement() {
         System.out.println("\n--- CREAR MOVIMIENTO ---");
         System.out.println("Tipo de movimiento:");
-        System.out.println("1. VENTA (SALE)");
-        System.out.println("2. REABASTECIMIENTO (RESTOCK)");
+        System.out.println("1. ENTRADA (ENTRY)");
+        System.out.println("2. SALIDA (EXIT)");
         System.out.print("Seleccione: ");
         int typeOption = scanner.nextInt();
         scanner.nextLine();
 
-        MovementType type = (typeOption == 1) ? MovementType.SALE : MovementType.RESTOCK;
+        MovementType type = (typeOption == 1) ? MovementType.ENTRY : MovementType.EXIT;
 
-        Movement movement = new Movement();
-        movement.setIdMovement(movementIdCounter++);
-        movement.setMovementType(type);
-        movement.setDate(new Date());
+        Movement movement = new Movement(movementIdCounter++, type, new Date(), "");
 
         System.out.print("Descripción: ");
         String description = scanner.nextLine();
@@ -162,24 +209,63 @@ public class Main {
             double unitPrice = scanner.nextDouble();
             scanner.nextLine();
 
-            movement.addItem(product, quantity, unitPrice);
+            movement.addProductMovement(product, quantity, unitPrice);
             System.out.println("Producto agregado al movimiento.");
         }
 
         movement.processMovement();
+        movements.add(movement);
+        
+        // Create Kardex entry
+        for (ProductMovement pm : movement.getProductMovementList()) {
+            Kardex kardex = new Kardex(
+                kardexIdCounter++,
+                pm.getProduct(),
+                new Date(),
+                movement.getMovementType(),
+                pm.getQuantity(),
+                pm.getProduct().getStock(),
+                movement.getDescription()
+            );
+            kardexList.add(kardex);
+        }
+        
+        // Check for stock alerts
+        for (ProductMovement pm : movement.getProductMovementList()) {
+            if (pm.getProduct().verifyStockMinimo()) {
+                StockAlert alert = pm.getProduct().generateStockAlert(alertIdCounter++);
+                if (alert != null) {
+                    stockAlerts.add(alert);
+                    System.out.println("Alerta de stock generada para: " + pm.getProduct().getName());
+                }
+            }
+        }
+        
         view.displayMovementDetails(movement);
     }
 
     private static void registerSale() {
         System.out.println("\n--- REGISTRAR VENTA ---");
+        System.out.print("ID del cliente: ");
+        int customerId = scanner.nextInt();
+        scanner.nextLine();
+        
+        Customer customer = findCustomerById(customerId);
+        if (customer == null) {
+            System.out.println("Cliente no encontrado.");
+            return;
+        }
+        
         System.out.print("Total de la venta: ");
         double total = scanner.nextDouble();
         scanner.nextLine();
         System.out.print("Método de pago: ");
         String paymentMethod = scanner.nextLine();
 
-        Sale sale = new Sale(saleIdCounter++, new Date(), total, paymentMethod);
-        view.displaySaleDetails(sale);
+        SaleInvoice saleInvoice = new SaleInvoice(invoiceIdCounter++, new Date(), "INV-" + invoiceIdCounter, customer, paymentMethod, null);
+        saleInvoice.setTotal(total);
+        saleInvoices.add(saleInvoice);
+        view.displaySaleInvoiceDetails(saleInvoice);
         System.out.println("Venta registrada exitosamente.");
     }
 
@@ -195,8 +281,8 @@ public class Main {
         String address = scanner.nextLine();
 
         Supplier supplier = new Supplier(supplierIdCounter++, name, phone, email, address);
-        view.displaySupplierDetails(supplier);
-        System.out.println("Proveedor agregado exitosamente.");
+        suppliers.add(supplier);
+        System.out.println("Proveedor agregado exitosamente con ID: " + supplier.getIdSupplier());
     }
 
     private static void generateReports() {
@@ -205,7 +291,56 @@ public class Main {
         report.generateReportStock();
         report.generateReportSale();
         report.generateReportMovements();
+        report.consultKardex(kardexList);
+        report.consultStockAlerts(stockAlerts);
         report.exportReport();
+    }
+
+    private static void addCustomer() {
+        System.out.println("\n--- AGREGAR CLIENTE ---");
+        System.out.print("Nombre: ");
+        String name = scanner.nextLine();
+        System.out.print("Teléfono: ");
+        String phone = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Dirección: ");
+        String address = scanner.nextLine();
+
+        Customer customer = new Customer(customerIdCounter++, name, phone, email, address);
+        customers.add(customer);
+        view.displayCustomerDetails(customer);
+        System.out.println("Cliente agregado exitosamente.");
+    }
+
+    private static void viewMovements() {
+        System.out.println("\n--- MOVIMIENTOS ---");
+        for (Movement movement : movements) {
+            view.displayMovementDetails(movement);
+        }
+    }
+
+    private static void viewKardex() {
+        System.out.println("\n--- KARDEX ---");
+        for (Kardex kardex : kardexList) {
+            view.displayKardexEntry(kardex);
+        }
+    }
+
+    private static void viewStockAlerts() {
+        System.out.println("\n--- ALERTAS DE STOCK ---");
+        for (StockAlert alert : stockAlerts) {
+            view.displayStockAlert(alert);
+        }
+    }
+
+    private static Customer findCustomerById(int id) {
+        for (Customer customer : customers) {
+            if (customer.getIdCustomer() == id) {
+                return customer;
+            }
+        }
+        return null;
     }
 
     private static Product findProductById(int id) {
