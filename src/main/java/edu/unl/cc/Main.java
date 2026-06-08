@@ -66,8 +66,8 @@ public class Main {
             } catch (java.util.InputMismatchException e) {
                 System.out.println("Opción no válida. Debe ingresar un número.");
 
-                scanner.nextLine();
-                continue;           
+                scanner.nextLine(); // limpia la entrada incorrecta
+                continue;           // vuelve al inicio del while
             }
 
             switch (option) {

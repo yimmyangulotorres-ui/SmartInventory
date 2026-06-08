@@ -27,9 +27,7 @@ public class Product {
         setSalePrice(salePrice);
         this.purchasePrice = purchasePrice;
         setStock(stock);
-        this.minStock = minStock;
-    }
-
+}
     public void updateProduct(String name, Double salePrice) {
         this.name = name;
         this.salePrice = salePrice;
@@ -49,6 +47,7 @@ public class Product {
         }
         return null;
     }
+
     private void validateName(String name) throws InvalidProductStockException{
             if(name == null || name.trim().isEmpty()){
                 throw new InvalidProductNameException("The product name is invalid ");
@@ -119,10 +118,11 @@ public class Product {
         validateStock(stock);
         this.stock = stock;
     }
-
     public int getMinStock() {
         return minStock;
     }
 
+
     public void setMinStock(int minStock) {this.minStock = minStock;}
+
 }
