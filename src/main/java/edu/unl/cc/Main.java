@@ -23,16 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);
-    private static Inventory inventory = new Inventory();
-    private static View view = new View();
-    private static List<Movement> movements = new ArrayList<>();
-    private static List<SaleInvoice> saleInvoices = new ArrayList<>();
-    private static List<PurchaseInvoice> purchaseInvoices = new ArrayList<>();
-    private static List<Supplier> suppliers = new ArrayList<>();
-    private static List<Customer> customers = new ArrayList<>();
-    private static List<Kardex> kardexList = new ArrayList<>();
-    private static List<StockAlert> stockAlerts = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in); // Asociación con Scanner
+    private static Inventory inventory = new Inventory(); // Composición con Inventory
+    private static View view = new View(); // Composición con View
+    private static List<Movement> movements = new ArrayList<>(); // Composición con Movement
+    private static List<SaleInvoice> saleInvoices = new ArrayList<>(); // Composición con SaleInvoice
+    private static List<PurchaseInvoice> purchaseInvoices = new ArrayList<>(); // Composición con PurchaseInvoice
+    private static List<Supplier> suppliers = new ArrayList<>(); // Composición con Supplier
+    private static List<Customer> customers = new ArrayList<>(); // Composición con Customer
+    private static List<Kardex> kardexList = new ArrayList<>(); // Composición con Kardex
+    private static List<StockAlert> stockAlerts = new ArrayList<>(); // Composición con StockAlert
     private static int productIdCounter = 1;
     private static int categoryIdCounter = 1;
     private static int supplierIdCounter = 1;
@@ -66,8 +66,8 @@ public class Main {
             } catch (java.util.InputMismatchException e) {
                 System.out.println("Opción no válida. Debe ingresar un número.");
 
-                scanner.nextLine(); // limpia la entrada incorrecta
-                continue;           // vuelve al inicio del while
+                scanner.nextLine();
+                continue;
             }
 
             switch (option) {
@@ -323,7 +323,6 @@ public class Main {
         movement.processMovement();
         movements.add(movement);
         
-        // Create Kardex entry
         for (ProductMovement pm : movement.getProductMovementList()) {
             Kardex kardex = new Kardex(
                 kardexIdCounter++,
@@ -358,7 +357,6 @@ public class Main {
         
         if (invoiceOption == 1) {
             if (movement.getMovementType() == MovementType.ENTRY) {
-                // Purchase invoice - need supplier
                 System.out.println("\n--- GENERAR FACTURA DE COMPRA ---");
                 System.out.println("Proveedores existentes:");
                 for (Supplier s : suppliers) {
@@ -397,7 +395,7 @@ public class Main {
                     System.out.println("Proveedor creado con ID: " + supplier.getIdSupplier());
                 }
                 
-                PurchaseInvoice invoice = new PurchaseInvoice(
+                PurchaseInvoice invoice = new PurchaseInvoice( // new instanciación
                     invoiceIdCounter++,
                     new Date(),
                     "INV-" + invoiceIdCounter,
@@ -411,7 +409,6 @@ public class Main {
                 System.out.println("Factura de compra generada exitosamente.");
                 
             } else {
-                // Sale invoice - need customer
                 System.out.println("\n--- GENERAR FACTURA DE VENTA ---");
                 System.out.println("Clientes existentes:");
                 for (Customer c : customers) {
@@ -453,7 +450,7 @@ public class Main {
                 System.out.print("Método de pago: ");
                 String paymentMethod = scanner.nextLine();
                 
-                SaleInvoice invoice = new SaleInvoice(
+                SaleInvoice invoice = new SaleInvoice( // new instanciación
                     invoiceIdCounter++,
                     new Date(),
                     "INV-" + invoiceIdCounter,
@@ -473,8 +470,6 @@ public class Main {
 
     private static void generateReports() {
         System.out.println("\n--- GENERAR REPORTES ---");
-        
-        // Reporte de Stock
         System.out.println("\n===== REPORTE DE STOCK =====");
         System.out.println("Total de productos: " + inventory.showProduct().size());
         int totalStock = 0;
@@ -486,6 +481,7 @@ public class Main {
             }
         }
         System.out.println("Stock total: " + totalStock);
+        
         System.out.println("Productos con stock bajo: " + lowStockCount);
         
         // Reporte de Ventas
@@ -527,7 +523,6 @@ public class Main {
             view.displayKardexEntry(kardex);
         }
         
-        // Alertas de Stock
         System.out.println("\n===== ALERTAS DE STOCK =====");
         for (StockAlert alert : stockAlerts) {
             view.displayStockAlert(alert);

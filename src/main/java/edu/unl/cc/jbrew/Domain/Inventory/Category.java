@@ -8,7 +8,7 @@ public class Category {
 
     private int idCategory;
     private String name;
-    private List<Product> productList;
+    private List<Product> productList; // Composición con Product
 
     public Category(int idCategory, String name) throws InvalidCategoryNameException {
         this.idCategory = idCategory;
@@ -24,11 +24,11 @@ public class Category {
             throw new InvalidCategoryNameException("The Category name cannot be numbers");
         }
     }
-    public void addProduct(Product product) {
+    public void addProduct(Product product) { // Asociación con Product
         productList.add(product);
     }
 
-    public void removeProduct(Product product) {
+    public void removeProduct(Product product) { // Asociación con Product
         productList.remove(product);
     }
 

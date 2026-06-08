@@ -8,12 +8,12 @@ public abstract class Invoice {
     private Date invoiceDate;
     private double total;
     private String invoiceNumber;
-    private Movement movement;
+    private Movement movement; // Composición con Movement
 
     public Invoice() {
     }
 
-    public Invoice(int idInvoice, Date invoiceDate, String invoiceNumber, Movement movement) {
+    public Invoice(int idInvoice, Date invoiceDate, String invoiceNumber, Movement movement) { // Asociación con Movement
         this.idInvoice = idInvoice;
         this.invoiceDate = invoiceDate;
         this.invoiceNumber = invoiceNumber;

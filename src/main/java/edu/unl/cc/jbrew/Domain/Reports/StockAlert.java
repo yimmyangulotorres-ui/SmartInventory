@@ -6,13 +6,13 @@ import edu.unl.cc.jbrew.Domain.Inventory.Product;
 public class StockAlert {
 
     private int idAlert;
-    private Product product;
+    private Product product; // Composición con Product
     private int currentStock;
     private int minStock;
     private Date alertDate;
     private boolean isResolved;
 
-    public StockAlert(int idAlert, Product product, int currentStock, int minStock, Date alertDate) {
+    public StockAlert(int idAlert, Product product, int currentStock, int minStock, Date alertDate) { // Asociación con Product
         this.idAlert = idAlert;
         this.product = product;
         this.currentStock = currentStock;

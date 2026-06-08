@@ -4,15 +4,15 @@ import java.util.Date;
 import edu.unl.cc.jbrew.Domain.People.Customer;
 import edu.unl.cc.jbrew.Domain.Movements.Movement;
 
-public class SaleInvoice extends Invoice {
-    private Customer customer;
+public class SaleInvoice extends Invoice { // Herencia de Invoice
+    private Customer customer; // Composición con Customer
     private String paymentMethod;
 
     public SaleInvoice() {
         super();
     }
 
-    public SaleInvoice(int idInvoice, Date invoiceDate, String invoiceNumber, Customer customer, String paymentMethod, Movement movement) {
+    public SaleInvoice(int idInvoice, Date invoiceDate, String invoiceNumber, Customer customer, String paymentMethod, Movement movement) { // Asociación con Movement
         super(idInvoice, invoiceDate, invoiceNumber, movement);
         this.customer = customer;
         this.paymentMethod = paymentMethod;
@@ -20,7 +20,6 @@ public class SaleInvoice extends Invoice {
 
     @Override
     public void calculateTotal() {
-        // Implementation for calculating sale invoice total
         System.out.println("Calculating total for sale invoice: " + getInvoiceNumber());
     }
 
@@ -29,7 +28,6 @@ public class SaleInvoice extends Invoice {
         System.out.println("Generating sale invoice: " + getInvoiceNumber() + " for customer: " + customer.getName());
     }
 
-    // Getters and Setters
     public Customer getCustomer() {
         return customer;
     }

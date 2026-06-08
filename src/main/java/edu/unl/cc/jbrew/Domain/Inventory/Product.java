@@ -41,9 +41,9 @@ public class Product {
         return stock <= minStock;
     }
 
-    public StockAlert generateStockAlert(int idAlert) {
+    public StockAlert generateStockAlert(int idAlert) { // Asociación con StockAlert
         if (verifyStockMinimo()) {
-            return new StockAlert(idAlert, this, stock, minStock, new java.util.Date());
+            return new StockAlert(idAlert, this, stock, minStock, new java.util.Date()); // Composición con StockAlert
         }
         return null;
     }

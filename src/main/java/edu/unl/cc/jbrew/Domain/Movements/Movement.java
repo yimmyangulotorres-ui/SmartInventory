@@ -9,20 +9,20 @@ import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
 
 public class Movement {
     private int idMovement;
-    private MovementType movementType;
-    private MovementStatus status;
+    private MovementType movementType; // Asociación con MovementType (enum)
+    private MovementStatus status; // Asociación con MovementStatus (enum)
     private Date date;
     private String description;
-    private List<ProductMovement> productMovementList;
+    private List<ProductMovement> productMovementList; // Composición con ProductMovement
     private double total;
-    private Invoice invoice;
+    private Invoice invoice; // Asociación con Invoice
 
     public Movement() {
         productMovementList = new ArrayList<>();
         this.status = MovementStatus.PENDING;
     }
 
-    public Movement(int idMovement, MovementType movementType, Date date, String description) {
+    public Movement(int idMovement, MovementType movementType, Date date, String description) { // Asociación con MovementType
         this();
         this.idMovement = idMovement;
         this.movementType = movementType;
@@ -30,8 +30,8 @@ public class Movement {
         this.description = description;
     }
 
-    public void addProductMovement(Product product, int quantity, double unitPrice) {
-        ProductMovement productMovement = new ProductMovement(productMovementList.size() + 1, product, quantity, unitPrice);
+    public void addProductMovement(Product product, int quantity, double unitPrice) { // Asociación con Product
+        ProductMovement productMovement = new ProductMovement(productMovementList.size() + 1, product, quantity, unitPrice); // Composición con ProductMovement
         productMovementList.add(productMovement);
     }
 
@@ -60,7 +60,7 @@ public class Movement {
         calculateTotal();
     }
 
-    public void processMovementWithKardex(Kardex kardex) {
+    public void processMovementWithKardex(Kardex kardex) { // Asociación con Kardex
         for (ProductMovement productMovement : productMovementList) {
             if (movementType == MovementType.ENTRY) {
                 productMovement.getProduct().modifyStock(productMovement.getQuantity());
@@ -73,7 +73,7 @@ public class Movement {
         calculateTotal();
     }
 
-    public void generateInvoice(Invoice invoice) {
+    public void generateInvoice(Invoice invoice) { // Asociación con Invoice
         this.invoice = invoice;
         invoice.generateInvoice();
     }

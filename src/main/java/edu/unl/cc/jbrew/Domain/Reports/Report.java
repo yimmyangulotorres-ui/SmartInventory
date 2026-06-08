@@ -28,14 +28,14 @@ public class Report {
         System.out.println("Generando reporte de movimientos...");
     }
 
-    public void consultKardex(List<Kardex> kardexList) {
+    public void consultKardex(List<Kardex> kardexList) { // Asociación con Kardex
         System.out.println("Consultando kardex para reporte...");
         for (Kardex kardex : kardexList) {
             kardex.showKardexEntry();
         }
     }
 
-    public void consultStockAlerts(List<StockAlert> stockAlertList) {
+    public void consultStockAlerts(List<StockAlert> stockAlertList) { // Asociación con StockAlert
         System.out.println("Consultando alertas de stock para reporte...");
         for (Object alert : stockAlertList) {
             System.out.println("Alert: " + alert.toString());

@@ -6,12 +6,12 @@ import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
 public class ProductMovement {
 
     private int idProductMovement;
-    private Product product;
+    private Product product; // Composición con Product
     private int quantity;
     private double unitPrice;
     private double subtotal;
 
-    public ProductMovement(int idProductMovement, Product product, int quantity, double unitPrice) {
+    public ProductMovement(int idProductMovement, Product product, int quantity, double unitPrice) { // Asociación con Product
         this.idProductMovement = idProductMovement;
         this.product = product;
         this.quantity = quantity;
@@ -23,7 +23,7 @@ public class ProductMovement {
         return quantity * unitPrice;
     }
 
-    public void updateKardex(Kardex kardex, MovementType movementType) {
+    public void updateKardex(Kardex kardex, MovementType movementType) { // Asociación con Kardex y MovementType
         if (movementType == MovementType.ENTRY) {
             kardex.registerEntry(quantity);
         } else {

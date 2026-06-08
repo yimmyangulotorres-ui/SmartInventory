@@ -13,7 +13,7 @@ import edu.unl.cc.jbrew.Domain.Reports.StockAlert;
 import java.util.Scanner;
 
 public class View {
-    private Scanner scanner;
+    private Scanner scanner; // Asociación con Scanner
 
     public View() {
         this.scanner = new Scanner(System.in);
@@ -52,7 +52,7 @@ public class View {
         }
     }
 
-    public void displayInventoryProductList(Inventory inventory) {
+    public void displayInventoryProductList(Inventory inventory) { // Asociación con Inventory
         System.out.println("===== PRODUCT LIST FROM INVENTORY =====");
         for (Product product : inventory.showProduct()) {
             System.out.println("Product ID: " + product.getIdProduct());
@@ -66,7 +66,7 @@ public class View {
         }
     }
 
-    public void displayCategoryList(Inventory inventory) {
+    public void displayCategoryList(Inventory inventory) { // Asociación con Inventory
         System.out.println("===== CATEGORY LIST =====");
         for (Category category : inventory.showCategory()) {
             System.out.println("Category ID: " + category.getIdCategory());
@@ -75,7 +75,7 @@ public class View {
         }
     }
 
-    public void displayMovementDetails(Movement movement) {
+    public void displayMovementDetails(Movement movement) { // Asociación con Movement
         System.out.println("===== MOVEMENT DETAILS =====");
         System.out.println("Movement ID: " + movement.getIdMovement());
         System.out.println("Movement Type: " + movement.getMovementType());
@@ -90,7 +90,7 @@ public class View {
         }
     }
 
-    public void displaySaleInvoiceDetails(SaleInvoice saleInvoice) {
+    public void displaySaleInvoiceDetails(SaleInvoice saleInvoice) { // Asociación con SaleInvoice
         System.out.println("===== SALE INVOICE DETAILS =====");
         System.out.println("Invoice ID: " + saleInvoice.getIdInvoice());
         System.out.println("Invoice Number: " + saleInvoice.getInvoiceNumber());
@@ -100,7 +100,7 @@ public class View {
         System.out.println("Payment Method: " + saleInvoice.getPaymentMethod());
     }
 
-    public void displaySupplierDetails(Supplier supplier) {
+    public void displaySupplierDetails(Supplier supplier) { // Asociación con Supplier
         System.out.println("===== SUPPLIER DETAILS =====");
         System.out.println("Supplier ID: " + supplier.getIdSupplier());
         System.out.println("Name: " + supplier.getName());
@@ -109,7 +109,7 @@ public class View {
         System.out.println("Address: " + supplier.getAddress());
     }
 
-    public void displayCustomerDetails(Customer customer) {
+    public void displayCustomerDetails(Customer customer) { // Asociación con Customer
         System.out.println("===== CUSTOMER DETAILS =====");
         System.out.println("Customer ID: " + customer.getIdCustomer());
         System.out.println("Name: " + customer.getName());
@@ -118,7 +118,7 @@ public class View {
         System.out.println("Address: " + customer.getAddress());
     }
 
-    public void displayKardexEntry(Kardex kardex) {
+    public void displayKardexEntry(Kardex kardex) { // Asociación con Kardex
         System.out.println("===== KARDEX ENTRY =====");
         System.out.println("Kardex ID: " + kardex.getIdKardex());
         System.out.println("Product: " + kardex.getProduct().getName());
@@ -129,7 +129,7 @@ public class View {
         System.out.println("Description: " + kardex.getDescription());
     }
 
-    public void displayStockAlert(StockAlert alert) {
+    public void displayStockAlert(StockAlert alert) { // Asociación con StockAlert
         System.out.println("===== STOCK ALERT =====");
         System.out.println("Alert ID: " + alert.getIdAlert());
         System.out.println("Product: " + alert.getProduct().getName());

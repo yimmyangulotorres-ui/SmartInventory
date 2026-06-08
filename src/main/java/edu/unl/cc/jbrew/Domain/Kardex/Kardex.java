@@ -6,14 +6,14 @@ import edu.unl.cc.jbrew.Domain.Movements.MovementType;
 
 public class Kardex {
     private int idKardex;
-    private Product product;
+    private Product product; // Composición con Product
     private Date date;
-    private MovementType movementType;
+    private MovementType movementType; // Asociación con MovementType (enum)
     private int quantity;
     private int balance;
     private String description;
 
-    public Kardex(int idKardex, Product product, Date date, MovementType movementType, int quantity, int balance, String description) {
+    public Kardex(int idKardex, Product product, Date date, MovementType movementType, int quantity, int balance, String description) { // Asociación con Product y MovementType
         this.idKardex = idKardex;
         this.product = product;
         this.date = date;

@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    private List<Product> productList;
-    private List<Category> categoryList;
+    private List<Product> productList; // Composición con Product
+    private List<Category> categoryList; // Composición con Category
 
     public Inventory() {
         productList = new ArrayList<>();
         categoryList = new ArrayList<>();
     }
 
-    public void addProduct(Product product) {
+    public void addProduct(Product product) { // Asociación con Product
         productList.add(product);
     }
 
-    public void removeProduct(Product product) {
+    public void removeProduct(Product product) { // Asociación con Product
         productList.remove(product);
     }
 
@@ -33,11 +33,11 @@ public class Inventory {
         return productList;
     }
 
-    public void addCategory(Category category) {
+    public void addCategory(Category category) { // Asociación con Category
         categoryList.add(category);
     }
 
-    public void updateCategory(Category category) {
+    public void updateCategory(Category category) { // Asociación con Category
         for (int i = 0; i < categoryList.size(); i++) {
             if (categoryList.get(i).getIdCategory() == category.getIdCategory()) {
                 categoryList.set(i, category);
@@ -46,7 +46,7 @@ public class Inventory {
         }
     }
 
-    public void removeCategory(Category category) {
+    public void removeCategory(Category category) { // Asociación con Category
         categoryList.remove(category);
     }
 
