@@ -235,10 +235,11 @@ public class Main {
             System.out.println("Error: " + e.getMessage());
 
         }
-}
+    }
+
     private static Category findCategoryByName(String name) {
 
-        for (Category category : inventory.getCategoryList()) {
+        for (Category category : inventory.showCategory()) {
 
             if (category.getName().equalsIgnoreCase(name)) {
                 return category;
@@ -248,11 +249,12 @@ public class Main {
 
         return null;
     }
+
     private static void showCategories() {
 
         System.out.println("\n--- CATEGORÍAS DISPONIBLES ---");
 
-        for (Category category : inventory.getCategoryList()) {
+        for (Category category : inventory.showCategory()) {
             System.out.println("- " + category.getName());
         }
     }
@@ -562,15 +564,6 @@ public class Main {
         for (Customer customer : customers) {
             if (customer.getIdCustomer() == id) {
                 return customer;
-            }
-        }
-        return null;
-    }
-
-    private static Category findCategoryById(int id) {
-        for (Category category : inventory.showCategory()) {
-            if (category.getIdCategory() == id) {
-                return category;
             }
         }
         return null;
