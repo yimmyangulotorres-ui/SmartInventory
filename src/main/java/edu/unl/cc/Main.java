@@ -219,14 +219,14 @@ public class Main {
             Category category = findCategoryByName(categoryName);
 
             if (category == null) {
-                System.out.println("Categoría no encontrada.");
+                System.out.println("Categoría no encontrada. Debe crear la categoría primero.");
                 return;
             }
 
             inventory.addProduct(product);
             category.addProduct(product);
 
-            System.out.println("Producto agregado exitosamente.");
+            System.out.println("Producto agregado exitosamente a la categoría: " + category.getName());
 
         } catch (InvalidProductNameException |
                  InvalidProductPriceException |
@@ -294,7 +294,13 @@ public class Main {
 
         System.out.println("Agregar productos al movimiento (0 para terminar):");
         while (true) {
-            System.out.print("ID del producto: ");
+            // Show available products
+            System.out.println("\n--- PRODUCTOS DISPONIBLES ---");
+            for (Product p : inventory.showProduct()) {
+                System.out.println("ID: " + p.getIdProduct() + " | Nombre: " + p.getName() + " | Stock: " + p.getStock() + " | Precio: $" + p.getSalePrice());
+            }
+            
+            System.out.print("\nID del producto: ");
             int productId = scanner.nextInt();
             if (productId == 0) break;
 
