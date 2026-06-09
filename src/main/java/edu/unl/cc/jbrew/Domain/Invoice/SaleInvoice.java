@@ -20,12 +20,14 @@ public class SaleInvoice extends Invoice { // Herencia de Invoice
 
     @Override
     public void calculateTotal() {
-        System.out.println("Calculating total for sale invoice: " + getInvoiceNumber());
+        if (getMovement() != null) {
+            setTotal(getMovement().calculateTotal());
+        }
     }
 
     @Override
     public void generateInvoice() {
-        System.out.println("Generating sale invoice: " + getInvoiceNumber() + " for customer: " + customer.getName());
+        calculateTotal();
     }
 
     public Customer getCustomer() {

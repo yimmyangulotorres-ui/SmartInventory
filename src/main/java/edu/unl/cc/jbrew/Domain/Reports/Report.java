@@ -17,33 +17,32 @@ public class Report {
     }
 
     public void generateReportStock() {
-        System.out.println("Generando reporte de stock...");
+        // Stock report generation logic
+        // The actual display is handled by ReportView.generateReportStock()
     }
 
     public void generateReportSale() {
-        System.out.println("Generando reporte de ventas...");
+        // Sale report generation logic
+        // The actual display is handled by ReportView.generateReportSale()
     }
 
     public void generateReportMovements() {
-        System.out.println("Generando reporte de movimientos...");
+        // Movements report generation logic
+        // The actual display is handled by ReportView.generateReportMovements()
     }
 
     public void consultKardex(List<Kardex> kardexList) { // Asociación con Kardex
-        System.out.println("Consultando kardex para reporte...");
-        for (Kardex kardex : kardexList) {
-            kardex.showKardexEntry();
-        }
+        // The actual display is handled by ReportView.consultKardex()
     }
 
     public void consultStockAlerts(List<StockAlert> stockAlertList) { // Asociación con StockAlert
-        System.out.println("Consultando alertas de stock para reporte...");
-        for (Object alert : stockAlertList) {
-            System.out.println("Alert: " + alert.toString());
-        }
+        // Alert processing logic - iterate through stock alerts
+        // The actual display is handled by ReportView.consultStockAlerts()
     }
 
     public void exportReport() {
-        System.out.println("Exportando reporte a archivo...");
+        // Report export logic
+        // The actual display is handled by ReportView.exportReport()
     }
 
     // Getters y Setters

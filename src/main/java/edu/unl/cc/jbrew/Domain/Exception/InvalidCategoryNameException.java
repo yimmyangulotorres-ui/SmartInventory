@@ -1,7 +1,7 @@
 package edu.unl.cc.jbrew.Domain.Exception;
 
-public class InvalidCategoryNameException extends Exception{
-    public InvalidCategoryNameException(String mensaje) {
-        super(mensaje);
+public class InvalidCategoryNameException extends RuntimeException {
+    public InvalidCategoryNameException(String message) {
+        super(message);
     }
 }

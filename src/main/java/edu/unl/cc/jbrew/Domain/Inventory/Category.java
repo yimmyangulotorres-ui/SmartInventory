@@ -18,10 +18,10 @@ public class Category {
 
     private void validateName(String name) throws InvalidCategoryNameException {
         if(name == null || name.trim().isEmpty()){
-            throw new InvalidCategoryNameException("The Category name cannot be Empty ");
+            throw new InvalidCategoryNameException("El nombre de la categoría no puede estar vacío");
         }
         if(name.matches(".*\\d.*")){
-            throw new InvalidCategoryNameException("The Category name cannot be numbers");
+            throw new InvalidCategoryNameException("El nombre de la categoría no puede contener números");
         }
     }
     public void addProduct(Product product) { // Asociación con Product

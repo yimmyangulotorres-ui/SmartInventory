@@ -27,23 +27,19 @@ public class Kardex {
         this.quantity = quantity;
         this.movementType = MovementType.ENTRY;
         this.balance += quantity;
+        this.date = new Date();
     }
 
     public void registerExit(int quantity) {
         this.quantity = quantity;
         this.movementType = MovementType.EXIT;
         this.balance -= quantity;
+        this.date = new Date();
     }
 
     public void showKardexEntry() {
-        System.out.println("===== KARDEX ENTRY =====");
-        System.out.println("Kardex ID: " + idKardex);
-        System.out.println("Product: " + product.getName());
-        System.out.println("Date: " + date);
-        System.out.println("Movement Type: " + movementType);
-        System.out.println("Quantity: " + quantity);
-        System.out.println("Balance: " + balance);
-        System.out.println("Description: " + description);
+        // Kardex display logic - use presentation layer instead
+        // The actual display is handled by KardexView.showKardexEntry()
     }
 
     // Getters and Setters

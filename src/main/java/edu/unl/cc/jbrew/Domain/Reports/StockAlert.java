@@ -23,25 +23,18 @@ public class StockAlert {
 
     public void checkStockLevel() {
         if (currentStock <= minStock) {
-            System.out.println("ALERTA: Stock bajo para producto " + product.getName() + 
-                             " - Stock actual: " + currentStock + 
-                             " - Stock mínimo: " + minStock);
+            // Alert logic - stock is below minimum
+            // The actual alert display is handled by StockAlertView
         }
     }
 
     public void resolveAlert() {
         this.isResolved = true;
-        System.out.println("Alerta resuelta para producto: " + product.getName());
     }
 
     public void showAlert() {
-        System.out.println("===== STOCK ALERT =====");
-        System.out.println("Alert ID: " + idAlert);
-        System.out.println("Product: " + product.getName());
-        System.out.println("Current Stock: " + currentStock);
-        System.out.println("Minimum Stock: " + minStock);
-        System.out.println("Alert Date: " + alertDate);
-        System.out.println("Status: " + (isResolved ? "RESOLVED" : "PENDING"));
+        // Alert display logic - use presentation layer instead
+        // The actual display is handled by StockAlertView.showAlert()
     }
 
     // Getters and Setters

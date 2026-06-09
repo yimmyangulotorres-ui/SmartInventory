@@ -17,6 +17,11 @@ import edu.unl.cc.jbrew.Domain.People.Customer;
 import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
 import edu.unl.cc.jbrew.Domain.Reports.StockAlert;
 import edu.unl.cc.jbrew.View.View;
+import edu.unl.cc.jbrew.View.MovementView;
+import edu.unl.cc.jbrew.View.StockAlertView;
+import edu.unl.cc.jbrew.View.KardexView;
+import edu.unl.cc.jbrew.View.ReportView;
+import edu.unl.cc.jbrew.View.InvoiceView;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -26,6 +31,11 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in); // Asociación con Scanner
     private static Inventory inventory = new Inventory(); // Composición con Inventory
     private static View view = new View(); // Composición con View
+    private static MovementView movementView = new MovementView(); // Composición con MovementView
+    private static StockAlertView stockAlertView = new StockAlertView(); // Composición con StockAlertView
+    private static KardexView kardexView = new KardexView(); // Composición con KardexView
+    private static ReportView reportView = new ReportView(); // Composición con ReportView
+    private static InvoiceView invoiceView = new InvoiceView(); // Composición con InvoiceView
     private static List<Movement> movements = new ArrayList<>(); // Composición con Movement
     private static List<SaleInvoice> saleInvoices = new ArrayList<>(); // Composición con SaleInvoice
     private static List<PurchaseInvoice> purchaseInvoices = new ArrayList<>(); // Composición con PurchaseInvoice
@@ -43,30 +53,13 @@ public class Main {
     private static int invoiceIdCounter = 1;
 
     public static void main(String[] args) {
+        initializeSampleData();
         while (true) {
-            System.out.println("\n====== SISTEMA DE GESTIÓN DE INVENTARIO ======");
-            System.out.println("1. Agregar Categoría");
-            System.out.println("2. Agregar Producto");
-            System.out.println("3. Ver Productos");
-            System.out.println("4. Ver Categorías");
-            System.out.println("5. Buscar Producto");
-            System.out.println("6. Crear Movimiento (Entrada/Salida)");
-            System.out.println("7. Ver Movimientos");
-            System.out.println("8. Ver Kardex");
-            System.out.println("9. Ver Alertas de Stock");
-            System.out.println("10. Generar Reportes");
-            System.out.println("0. Salir");
+            view.displayMenu();
+            int option = view.getIntInput();
 
-            int option;
-
-            try {
-                System.out.print("Seleccione una opción: ");
-                option = scanner.nextInt();
-                scanner.nextLine();
-            } catch (java.util.InputMismatchException e) {
+            if (option == -1) {
                 System.out.println("Opción no válida. Debe ingresar un número.");
-
-                scanner.nextLine();
                 continue;
             }
 
@@ -251,12 +244,7 @@ public class Main {
     }
 
     private static void showCategories() {
-
-        System.out.println("\n--- CATEGORÍAS DISPONIBLES ---");
-
-        for (Category category : inventory.showCategory()) {
-            System.out.println("- " + category.getName());
-        }
+        view.displayCategoryList(inventory.showCategory());
     }
 
     private static void searchProduct() {
@@ -403,10 +391,10 @@ public class Main {
                     "PO-" + invoiceIdCounter,
                     movement
                 );
-                invoice.calculateTotal();
+                invoiceView.calculateTotalPurchaseInvoice(invoice);
                 purchaseInvoices.add(invoice);
                 movement.generateInvoice(invoice);
-                System.out.println("Factura de compra generada exitosamente.");
+                invoiceView.generatePurchaseInvoice(invoice);
                 
             } else {
                 System.out.println("\n--- GENERAR FACTURA DE VENTA ---");
@@ -458,18 +446,24 @@ public class Main {
                     paymentMethod,
                     movement
                 );
-                invoice.calculateTotal();
+                invoiceView.calculateTotalSaleInvoice(invoice);
                 saleInvoices.add(invoice);
                 movement.generateInvoice(invoice);
-                System.out.println("Factura de venta generada exitosamente.");
+                invoiceView.generateSaleInvoice(invoice);
             }
         }
         
-        view.displayMovementDetails(movement);
+        movementView.showMovement(movement);
     }
 
     private static void generateReports() {
         System.out.println("\n--- GENERAR REPORTES ---");
+        
+        edu.unl.cc.jbrew.Domain.Reports.Report report = new edu.unl.cc.jbrew.Domain.Reports.Report(
+            1, "General", new Date()
+        );
+        
+        reportView.generateReportStock(report);
         System.out.println("\n===== REPORTE DE STOCK =====");
         System.out.println("Total de productos: " + inventory.showProduct().size());
         int totalStock = 0;
@@ -485,6 +479,7 @@ public class Main {
         System.out.println("Productos con stock bajo: " + lowStockCount);
         
         // Reporte de Ventas
+        reportView.generateReportSale(report);
         System.out.println("\n===== REPORTE DE VENTAS =====");
         System.out.println("Total de facturas de venta: " + saleInvoices.size());
         double totalSales = 0;
@@ -503,6 +498,7 @@ public class Main {
         System.out.println("Total de compras: $" + totalPurchases);
         
         // Reporte de Movimientos
+        reportView.generateReportMovements(report);
         System.out.println("\n===== REPORTE DE MOVIMIENTOS =====");
         System.out.println("Total de movimientos: " + movements.size());
         int entryCount = 0;
@@ -518,16 +514,12 @@ public class Main {
         System.out.println("Salidas: " + exitCount);
         
         // Kardex
-        System.out.println("\n===== KARDEX =====");
-        for (Kardex kardex : kardexList) {
-            view.displayKardexEntry(kardex);
-        }
+        reportView.consultKardex(report, kardexList);
         
         System.out.println("\n===== ALERTAS DE STOCK =====");
-        for (StockAlert alert : stockAlerts) {
-            view.displayStockAlert(alert);
-        }
+        reportView.consultStockAlerts(report, stockAlerts);
         
+        reportView.exportReport(report);
         System.out.println("\nReporte generado exitosamente.");
     }
 
@@ -543,21 +535,21 @@ public class Main {
     private static void viewMovements() {
         System.out.println("\n--- MOVIMIENTOS ---");
         for (Movement movement : movements) {
-            view.displayMovementDetails(movement);
+            movementView.showMovement(movement);
         }
     }
 
     private static void viewKardex() {
         System.out.println("\n--- KARDEX ---");
         for (Kardex kardex : kardexList) {
-            view.displayKardexEntry(kardex);
+            kardexView.showKardexEntry(kardex);
         }
     }
 
     private static void viewStockAlerts() {
         System.out.println("\n--- ALERTAS DE STOCK ---");
         for (StockAlert alert : stockAlerts) {
-            view.displayStockAlert(alert);
+            stockAlertView.showAlert(alert);
         }
     }
 
@@ -577,5 +569,49 @@ public class Main {
             }
         }
         return null;
+    }
+
+    private static void initializeSampleData() {
+        try {
+            // Crear categorías de ejemplo
+            Category bebidas = new Category(categoryIdCounter++, "Bebidas");
+            Category alimentos = new Category(categoryIdCounter++, "Alimentos");
+            Category limpieza = new Category(categoryIdCounter++, "Limpieza");
+            
+            inventory.addCategory(bebidas);
+            inventory.addCategory(alimentos);
+            inventory.addCategory(limpieza);
+            
+            // Crear productos de ejemplo
+            Product cocaCola = new Product(productIdCounter++, "Coca Cola", "Refresco de cola", 2.25, 1.5, 50, 10);
+            Product pepsi = new Product(productIdCounter++, "Pepsi", "Refresco de cola", 2.25, 1.5, 45, 10);
+            Product agua = new Product(productIdCounter++, "Agua", "Agua mineral", 1.0, 0.6, 100, 20);
+            Product pan = new Product(productIdCounter++, "Pan", "Pan de molde", 3.0, 2.0, 30, 5);
+            Product leche = new Product(productIdCounter++, "Leche", "Leche entera", 2.5, 1.8, 40, 10);
+            Product jabon = new Product(productIdCounter++, "Jabón", "Jabón líquido", 4.0, 2.5, 25, 5);
+            
+            // Agregar productos a sus categorías
+            bebidas.addProduct(cocaCola);
+            bebidas.addProduct(pepsi);
+            bebidas.addProduct(agua);
+            alimentos.addProduct(pan);
+            alimentos.addProduct(leche);
+            limpieza.addProduct(jabon);
+            
+            // Agregar productos al inventario
+            inventory.addProduct(cocaCola);
+            inventory.addProduct(pepsi);
+            inventory.addProduct(agua);
+            inventory.addProduct(pan);
+            inventory.addProduct(leche);
+            inventory.addProduct(jabon);
+            
+            // Actualizar contadores
+            productIdCounter = 7;
+            categoryIdCounter = 4;
+            
+        } catch (Exception e) {
+            System.out.println("Error al cargar datos de ejemplo: " + e.getMessage());
+        }
     }
 }

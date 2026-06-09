@@ -27,10 +27,11 @@ public class Product {
         setSalePrice(salePrice);
         this.purchasePrice = purchasePrice;
         setStock(stock);
+        this.minStock = minStock;
 }
-    public void updateProduct(String name, Double salePrice) {
-        this.name = name;
-        this.salePrice = salePrice;
+    public void updateProduct(String name, Double salePrice) throws InvalidProductNameException, InvalidProductPriceException {
+        setName(name);
+        setSalePrice(salePrice);
     }
 
     public void modifyStock(int quantity) {
@@ -48,23 +49,23 @@ public class Product {
         return null;
     }
 
-    private void validateName(String name) throws InvalidProductStockException{
+    private void validateName(String name) throws InvalidProductNameException{
             if(name == null || name.trim().isEmpty()){
-                throw new InvalidProductNameException("The product name is invalid ");
+                throw new InvalidProductNameException("El nombre del producto es inválido");
             }
         if(!name.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")){
-            throw new InvalidProductNameException("The product name can only contain letters and spaces");
+            throw new InvalidProductNameException("El nombre del producto solo puede contener letras y espacios");
         }
 
     }
     private void validateStock(int stock) throws InvalidProductStockException{
             if(stock == 0 || stock < 0){
-                throw new InvalidProductStockException("The stock cannot be negative and cero");
+                throw new InvalidProductStockException("El stock no puede ser negativo ni cero");
             }
     }
     private void validatePrice(double salePrice) throws InvalidProductPriceException{
             if(salePrice <= 0 || salePrice >=100){
-                throw new InvalidProductPriceException("The price outside the established range");
+                throw new InvalidProductPriceException("El precio está fuera del rango establecido");
             }
     }
     // Getters y Setters
@@ -106,7 +107,10 @@ public class Product {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(double purchasePrice) {
+    public void setPurchasePrice(double purchasePrice) throws InvalidProductPriceException {
+        if (purchasePrice <= 0) {
+            throw new InvalidProductPriceException("El precio de compra debe ser mayor que cero");
+        }
         this.purchasePrice = purchasePrice;
     }
 
@@ -123,6 +127,11 @@ public class Product {
     }
 
 
-    public void setMinStock(int minStock) {this.minStock = minStock;}
+    public void setMinStock(int minStock) {
+        if (minStock < 0) {
+            throw new IllegalArgumentException("El stock mínimo no puede ser negativo");
+        }
+        this.minStock = minStock;
+    }
 
 }

@@ -35,20 +35,8 @@ public class Movement {
         productMovementList.add(productMovement);
     }
 
-    public void showMovement() {
-        System.out.println("===== MOVEMENT DATA =====");
-        System.out.println("Movement ID: " + idMovement);
-        System.out.println("Movement Type: " + movementType);
-        System.out.println("Status: " + status);
-        System.out.println("Date: " + date);
-        System.out.println("Description: " + description);
-        for (ProductMovement productMovement : productMovementList) {
-            System.out.println("Product: " + productMovement.getProduct().getName() + " | Quantity: " + productMovement.getQuantity() +
-                    " | Unit Price: " + productMovement.getUnitPrice() + " | Subtotal: " + productMovement.getSubtotal());
-        }
-    }
 
-    public void processMovement() {
+    private void processStockChanges() {
         for (ProductMovement productMovement : productMovementList) {
             if (movementType == MovementType.ENTRY) {
                 productMovement.getProduct().modifyStock(productMovement.getQuantity());
@@ -56,17 +44,17 @@ public class Movement {
                 productMovement.getProduct().modifyStock(-productMovement.getQuantity());
             }
         }
+    }
+
+    public void processMovement() {
+        processStockChanges();
         this.status = MovementStatus.CONFIRMED;
         calculateTotal();
     }
 
     public void processMovementWithKardex(Kardex kardex) { // Asociación con Kardex
+        processStockChanges();
         for (ProductMovement productMovement : productMovementList) {
-            if (movementType == MovementType.ENTRY) {
-                productMovement.getProduct().modifyStock(productMovement.getQuantity());
-            } else {
-                productMovement.getProduct().modifyStock(-productMovement.getQuantity());
-            }
             productMovement.updateKardex(kardex, movementType);
         }
         this.status = MovementStatus.CONFIRMED;

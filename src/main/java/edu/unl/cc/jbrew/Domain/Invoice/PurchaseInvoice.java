@@ -20,12 +20,14 @@ public class PurchaseInvoice extends Invoice { // Herencia de Invoice
 
     @Override
     public void calculateTotal() {
-        System.out.println("Calculating total for purchase invoice: " + getInvoiceNumber());
+        if (getMovement() != null) {
+            setTotal(getMovement().calculateTotal());
+        }
     }
 
     @Override
     public void generateInvoice() {
-        System.out.println("Generating purchase invoice: " + getInvoiceNumber() + " for supplier: " + supplier.getName());
+        calculateTotal();
     }
 
     // Getters and Setters
