@@ -14,7 +14,7 @@ import java.util.Scanner;
 import java.util.List;
 
 public class View {
-    private Scanner scanner; // Asociación con Scanner
+    private Scanner scanner;
 
     public View() {
         this.scanner = new Scanner(System.in);
@@ -59,7 +59,7 @@ public class View {
         }
     }
 
-    public void displayInventoryProductList(Inventory inventory) { // Asociación con Inventory
+    public void displayInventoryProductList(Inventory inventory) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║               LISTA DE PRODUCTOS DEL INVENTARIO              ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -76,7 +76,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displayCategoryList(Inventory inventory) { // Asociación con Inventory
+    public void displayCategoryList(Inventory inventory) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                     LISTA DE CATEGORÍAS                      ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -88,7 +88,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displayMovementDetails(Movement movement) { // Asociación con Movement
+    public void displayMovementDetails(Movement movement) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                DETALLES DEL MOVIMIENTO                    ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -111,7 +111,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displaySaleInvoiceDetails(SaleInvoice saleInvoice) { // Asociación con SaleInvoice
+    public void displaySaleInvoiceDetails(SaleInvoice saleInvoice) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                 DETALLES DE FACTURA DE VENTA                 ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -124,7 +124,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displaySupplierDetails(Supplier supplier) { // Asociación con Supplier
+    public void displaySupplierDetails(Supplier supplier) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                   DETALLES DEL PROVEEDOR                     ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -136,7 +136,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displayCustomerDetails(Customer customer) { // Asociación con Customer
+    public void displayCustomerDetails(Customer customer) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                     DETALLES DEL CLIENTE                     ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -148,7 +148,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displayKardexEntry(Kardex kardex) { // Asociación con Kardex
+    public void displayKardexEntry(Kardex kardex) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                      ENTRADA DE KARDEX                       ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -162,7 +162,7 @@ public class View {
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
-    public void displayStockAlert(StockAlert alert) { // Asociación con StockAlert
+    public void displayStockAlert(StockAlert alert) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║                     ALERTA DE STOCK                          ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");

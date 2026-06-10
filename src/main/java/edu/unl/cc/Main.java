@@ -233,6 +233,76 @@ public class Main {
             );
             kardexList.add(kardex);
             
+            // Generar factura de compra
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.println("║  ¿Desea generar factura de compra para este movimiento?      ║");
+            System.out.println("║  1. Sí                                                      ║");
+            System.out.println("║  2. No                                                      ║");
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.print("║  Seleccione una opción: ");
+            
+            int invoiceOption = view.getIntInput();
+            
+            if (invoiceOption == 1) {
+                System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+                System.out.println("║                  GENERAR FACTURA DE COMPRA                    ║");
+                System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                System.out.println("║  Proveedores existentes:                                    ║");
+                for (Supplier s : suppliers) {
+                    System.out.println("║  ID: " + s.getIdSupplier() + " | Nombre: " + s.getName());
+                }
+                System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                System.out.println("║  1. Usar proveedor existente                                ║");
+                System.out.println("║  2. Crear nuevo proveedor                                   ║");
+                System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                System.out.print("║  Seleccione una opción: ");
+                
+                int supplierOption = view.getIntInput();
+                Supplier supplier = null;
+                
+                if (supplierOption == 1) {
+                    System.out.print("║  Ingrese ID del proveedor: ");
+                    int supplierId = view.getIntInput();
+                    supplier = findSupplierById(supplierId);
+                    if (supplier == null) {
+                        System.out.println("║  Proveedor no encontrado. Se creará uno nuevo.");
+                        supplierOption = 2;
+                    }
+                }
+                
+                if (supplierOption == 2 || supplier == null) {
+                    System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+                    System.out.println("║                    CREAR NUEVO PROVEEDOR                      ║");
+                    System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                    System.out.print("║  Nombre: ");
+                    String supplierName = scanner.nextLine();
+                    System.out.print("║  Teléfono: ");
+                    String phone = scanner.nextLine();
+                    System.out.print("║  Email: ");
+                    String email = scanner.nextLine();
+                    System.out.print("║  Dirección: ");
+                    String address = scanner.nextLine();
+                    
+                    supplier = new Supplier(supplierIdCounter++, supplierName, phone, email, address);
+                    suppliers.add(supplier);
+                    System.out.println("║  Proveedor creado con ID: " + supplier.getIdSupplier());
+                    System.out.println("╚══════════════════════════════════════════════════════════════╝");
+                }
+                
+                PurchaseInvoice invoice = new PurchaseInvoice(
+                    invoiceIdCounter++,
+                    new Date(),
+                    "INV-" + invoiceIdCounter,
+                    supplier,
+                    "PO-" + invoiceIdCounter,
+                    movement
+                );
+                invoice.calculateTotal();
+                purchaseInvoices.add(invoice);
+                invoiceView.calculateTotalPurchaseInvoice(invoice);
+                invoiceView.generatePurchaseInvoice(invoice);
+            }
+            
             System.out.println("║   Producto adquirido exitosamente con ID: " + product.getIdProduct());
             System.out.println("║   Movimiento de entrada registrado: " + movement.getIdMovement());
             System.out.println("╚══════════════════════════════════════════════════════════════╝");
@@ -310,6 +380,76 @@ public class Main {
             "Reabastecimiento"
         );
         kardexList.add(kardex);
+        
+        // Generar factura de compra
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("║  ¿Desea generar factura de compra para este movimiento?      ║");
+        System.out.println("║  1. Sí                                                      ║");
+        System.out.println("║  2. No                                                      ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.print("║  Seleccione una opción: ");
+        
+        int invoiceOption = view.getIntInput();
+        
+        if (invoiceOption == 1) {
+            System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+            System.out.println("║                  GENERAR FACTURA DE COMPRA                    ║");
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.println("║  Proveedores existentes:                                    ║");
+            for (Supplier s : suppliers) {
+                System.out.println("║  ID: " + s.getIdSupplier() + " | Nombre: " + s.getName());
+            }
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.println("║  1. Usar proveedor existente                                ║");
+            System.out.println("║  2. Crear nuevo proveedor                                   ║");
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.print("║  Seleccione una opción: ");
+            
+            int supplierOption = view.getIntInput();
+            Supplier supplier = null;
+            
+            if (supplierOption == 1) {
+                System.out.print("║  Ingrese ID del proveedor: ");
+                int supplierId = view.getIntInput();
+                supplier = findSupplierById(supplierId);
+                if (supplier == null) {
+                    System.out.println("║  Proveedor no encontrado. Se creará uno nuevo.");
+                    supplierOption = 2;
+                }
+            }
+            
+            if (supplierOption == 2 || supplier == null) {
+                System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+                System.out.println("║                    CREAR NUEVO PROVEEDOR                      ║");
+                System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                System.out.print("║  Nombre: ");
+                String supplierName = scanner.nextLine();
+                System.out.print("║  Teléfono: ");
+                String phone = scanner.nextLine();
+                System.out.print("║  Email: ");
+                String email = scanner.nextLine();
+                System.out.print("║  Dirección: ");
+                String address = scanner.nextLine();
+                
+                supplier = new Supplier(supplierIdCounter++, supplierName, phone, email, address);
+                suppliers.add(supplier);
+                System.out.println("║  Proveedor creado con ID: " + supplier.getIdSupplier());
+                System.out.println("╚══════════════════════════════════════════════════════════════╝");
+            }
+            
+            PurchaseInvoice invoice = new PurchaseInvoice(
+                invoiceIdCounter++,
+                new Date(),
+                "INV-" + invoiceIdCounter,
+                supplier,
+                "PO-" + invoiceIdCounter,
+                movement
+            );
+            invoice.calculateTotal();
+            purchaseInvoices.add(invoice);
+            invoiceView.calculateTotalPurchaseInvoice(invoice);
+            invoiceView.generatePurchaseInvoice(invoice);
+        }
         
         System.out.println("║   Stock actualizado: " + product.getStock());
         System.out.println("║   Movimiento de entrada registrado: " + movement.getIdMovement());
@@ -392,6 +532,79 @@ public class Main {
             "Venta"
         );
         kardexList.add(kardex);
+        
+        // Generar factura de venta
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("║  ¿Desea generar factura de venta para este movimiento?       ║");
+        System.out.println("║  1. Sí                                                      ║");
+        System.out.println("║  2. No                                                      ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.print("║  Seleccione una opción: ");
+        
+        int invoiceOption = view.getIntInput();
+        
+        if (invoiceOption == 1) {
+            System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+            System.out.println("║                  GENERAR FACTURA DE VENTA                      ║");
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.println("║  Clientes existentes:                                       ║");
+            for (Customer c : customers) {
+                System.out.println("║  ID: " + c.getIdCustomer() + " | Nombre: " + c.getName());
+            }
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.println("║  1. Usar cliente existente                                  ║");
+            System.out.println("║  2. Crear nuevo cliente                                     ║");
+            System.out.println("╠══════════════════════════════════════════════════════════════╣");
+            System.out.print("║  Seleccione una opción: ");
+            
+            int customerOption = view.getIntInput();
+            Customer customer = null;
+            
+            if (customerOption == 1) {
+                System.out.print("║  Ingrese ID del cliente: ");
+                int customerId = view.getIntInput();
+                customer = findCustomerById(customerId);
+                if (customer == null) {
+                    System.out.println("║  Cliente no encontrado. Se creará uno nuevo.");
+                    customerOption = 2;
+                }
+            }
+            
+            if (customerOption == 2 || customer == null) {
+                System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+                System.out.println("║                    CREAR NUEVO CLIENTE                        ║");
+                System.out.println("╠══════════════════════════════════════════════════════════════╣");
+                System.out.print("║  Nombre: ");
+                String customerName = scanner.nextLine();
+                System.out.print("║  Teléfono: ");
+                String phone = scanner.nextLine();
+                System.out.print("║  Email: ");
+                String email = scanner.nextLine();
+                System.out.print("║  Dirección: ");
+                String address = scanner.nextLine();
+                
+                customer = new Customer(customerIdCounter++, customerName, phone, email, address);
+                customers.add(customer);
+                System.out.println("║  Cliente creado con ID: " + customer.getIdCustomer());
+                System.out.println("╚══════════════════════════════════════════════════════════════╝");
+            }
+            
+            System.out.print("║  Método de pago: ");
+            String paymentMethod = scanner.nextLine();
+            
+            SaleInvoice invoice = new SaleInvoice(
+                invoiceIdCounter++,
+                new Date(),
+                "INV-" + invoiceIdCounter,
+                customer,
+                paymentMethod,
+                movement
+            );
+            invoice.calculateTotal();
+            saleInvoices.add(invoice);
+            invoiceView.calculateTotalSaleInvoice(invoice);
+            invoiceView.generateSaleInvoice(invoice);
+        }
         
         // Verificar alertas de stock
         if (product.verifyStockMinimo()) {
