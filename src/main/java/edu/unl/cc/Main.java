@@ -119,114 +119,394 @@ public class Main {
         }
     }
 
-    private static void addProduct() {
-        System.out.println("\n--- AGREGAR PRODUCTO ---");
+    private static void adquirirProducto() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                  ADQUIRIR PRODUCTO (NUEVO)                   ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
         String name;
-
         while (true) {
-            System.out.print("Nombre: ");
+            System.out.print("║  Nombre: ");
             name = scanner.nextLine();
-
             if (name.trim().isEmpty()) {
-                System.out.println("Error: El nombre no puede estar vacío.");
+                System.out.println("║  Error: El nombre no puede estar vacío.");
                 continue;
             }
-
             if (!name.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-                System.out.println("Error: El nombre solo puede contener letras y espacios.");
+                System.out.println("║  Error: El nombre solo puede contener letras y espacios.");
                 continue;
             }
-
             break;
         }
-        System.out.print("Descripción: ");
+        
+        System.out.print("║  Descripción: ");
         String description = scanner.nextLine();
-        double salePrice=0;
-
+        
         double purchasePrice;
-
         while (true) {
-            System.out.print("Precio de Compra: ");
-
+            System.out.print("║  Precio de Compra: ");
             purchasePrice = scanner.nextDouble();
-
             if (purchasePrice <= 0) {
-                System.out.println("Error: El precio debe ser mayor que cero.");
+                System.out.println("║  Error: El precio debe ser mayor que cero.");
                 continue;
             }
-
             break;
         }
-
-        salePrice = purchasePrice * 1.50;
-
-        System.out.println("Precio de Venta calculado (50% ganancia): $" + salePrice);
-
+        
+        double salePrice = purchasePrice * 1.50;
+        System.out.println("║  Precio de Venta calculado (50% ganancia): $" + salePrice);
+        
         int stock;
-
         while (true) {
-            System.out.print("Stock: ");
-
+            System.out.print("║  Stock Inicial: ");
             stock = scanner.nextInt();
-
-            if (stock < 0) {
-                System.out.println("Error: El stock no puede ser negativo.");
+            if (stock <= 0) {
+                System.out.println("║  Error: El stock debe ser mayor que cero.");
                 continue;
             }
-
             break;
         }
+        
         int minStock;
-
         while (true) {
-            System.out.print("Stock Mínimo: ");
-
+            System.out.print("║  Stock Mínimo: ");
             minStock = scanner.nextInt();
-
             if (minStock < 0) {
-                System.out.println("Error: El stock mínimo no puede ser negativo.");
+                System.out.println("║  Error: El stock mínimo no puede ser negativo.");
                 continue;
             }
-
             break;
         }
         scanner.nextLine();
-
+        
+        // Mostrar categorías
+        showCategories();
+        
+        Category category;
+        while (true) {
+            System.out.print("║  Ingrese el nombre de la categoría: ");
+            String categoryName = scanner.nextLine();
+            category = findCategoryByName(categoryName);
+            
+            if (category == null) {
+                System.out.println("║  Categoría no encontrada. Ingrese una categoría válida.");
+                continue;
+            }
+            
+            break;
+        }
+        
         try {
             Product product = new Product(
-                    productIdCounter++,
-                    name,
-                    description,
-                    salePrice,
-                    purchasePrice,
-                    stock,
-                    minStock
+                productIdCounter++,
+                name,
+                description,
+                salePrice,
+                purchasePrice,
+                stock,
+                minStock
             );
-
-            // Mostrar categorías
-            showCategories();
-
-            System.out.print("Ingrese el nombre de la categoría: ");
-            String categoryName = scanner.nextLine();
-
-            Category category = findCategoryByName(categoryName);
-
-            if (category == null) {
-                System.out.println("Categoría no encontrada. Debe crear la categoría primero.");
-                return;
-            }
-
+            
             inventory.addProduct(product);
             category.addProduct(product);
+            
+            // Crear movimiento de entrada
+            Movement movement = new Movement(
+                movementIdCounter++,
+                MovementType.ENTRY,
+                new Date(),
+                "Adquisición de nuevo producto: " + name
+            );
+            movement.addProductMovement(product, stock, purchasePrice);
+            movement.processMovement();
+            movements.add(movement);
+            
+            // Crear Kardex
+            Kardex kardex = new Kardex(
+                kardexIdCounter++,
+                product,
+                new Date(),
+                MovementType.ENTRY,
+                stock,
+                stock,
+                "Adquisición de nuevo producto"
+            );
+            kardexList.add(kardex);
+            
+            System.out.println("║   Producto adquirido exitosamente con ID: " + product.getIdProduct());
+            System.out.println("║   Movimiento de entrada registrado: " + movement.getIdMovement());
+            System.out.println("╚══════════════════════════════════════════════════════════════╝");
+            
+        } catch (InvalidProductNameException | InvalidProductPriceException | InvalidProductStockException e) {
+            System.out.println("║  Error: " + e.getMessage());
+            System.out.println("╚══════════════════════════════════════════════════════════════╝");
+        }
+    }
 
-            System.out.println("Producto agregado exitosamente a la categoría: " + category.getName());
+    private static void reabastecerProducto() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║              REABASTECER PRODUCTO (EXISTENTE)                ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
+        view.displayInventoryProductList(inventory);
+        
+        int productId;
+        while (true) {
+            System.out.print("║  Ingrese el ID del producto a reabastecer: ");
+            productId = view.getIntInput();
+            
+            if (productId == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
+            }
+            
+            Product product = findProductById(productId);
+            if (product == null) {
+                System.out.println("║   Producto no encontrado. Ingrese un ID válido.");
+                continue;
+            }
+            
+            break;
+        }
+        
+        Product product = findProductById(productId);
+        System.out.println("║  Producto: " + product.getName());
+        System.out.println("║  Stock actual: " + product.getStock());
+        
+        int quantity;
+        while (true) {
+            System.out.print("║  Cantidad a agregar: ");
+            quantity = view.getIntInput();
+            if (quantity == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
+            }
+            if (quantity <= 0) {
+                System.out.println("║  Error: La cantidad debe ser mayor que cero.");
+                continue;
+            }
+            break;
+        }
+        
+        // Crear movimiento de entrada
+        Movement movement = new Movement(
+            movementIdCounter++,
+            MovementType.ENTRY,
+            new Date(),
+            "Reabastecimiento de producto: " + product.getName()
+        );
+        movement.addProductMovement(product, quantity, product.getPurchasePrice());
+        movement.processMovement();
+        movements.add(movement);
+        
+        // Crear Kardex
+        Kardex kardex = new Kardex(
+            kardexIdCounter++,
+            product,
+            new Date(),
+            MovementType.ENTRY,
+            quantity,
+            product.getStock(),
+            "Reabastecimiento"
+        );
+        kardexList.add(kardex);
+        
+        System.out.println("║   Stock actualizado: " + product.getStock());
+        System.out.println("║   Movimiento de entrada registrado: " + movement.getIdMovement());
+        System.out.println("╚══════════════════════════════════════════════════════════════╝");
+    }
 
-        } catch (InvalidProductNameException |
-                 InvalidProductPriceException |
-                 InvalidProductStockException e) {
+    private static void movimientoSalida() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                  MOVIMIENTO DE SALIDA (VENTA)                ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
+        view.displayInventoryProductList(inventory);
+        
+        int productId;
+        while (true) {
+            System.out.print("║  Ingrese el ID del producto a vender: ");
+            productId = view.getIntInput();
+            
+            if (productId == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
+            }
+            
+            Product product = findProductById(productId);
+            if (product == null) {
+                System.out.println("║   Producto no encontrado. Ingrese un ID válido.");
+                continue;
+            }
+            
+            break;
+        }
+        
+        Product product = findProductById(productId);
+        System.out.println("║  Producto: " + product.getName());
+        System.out.println("║  Stock actual: " + product.getStock());
+        System.out.println("║  Precio de venta: $" + product.getSalePrice());
+        
+        int quantity;
+        while (true) {
+            System.out.print("║  Cantidad a vender: ");
+            quantity = view.getIntInput();
+            
+            if (quantity == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
+            }
+            
+            if (quantity <= 0) {
+                System.out.println("║  Error: La cantidad debe ser mayor que cero.");
+                continue;
+            }
+            
+            if (quantity > product.getStock()) {
+                System.out.println("║  Error: Stock insuficiente. Stock disponible: " + product.getStock());
+                continue;
+            }
+            
+            break;
+        }
+        
+        // Crear movimiento de salida
+        Movement movement = new Movement(
+            movementIdCounter++,
+            MovementType.EXIT,
+            new Date(),
+            "Venta de producto: " + product.getName()
+        );
+        movement.addProductMovement(product, quantity, product.getSalePrice());
+        movement.processMovement();
+        movements.add(movement);
+        
+        // Crear Kardex
+        Kardex kardex = new Kardex(
+            kardexIdCounter++,
+            product,
+            new Date(),
+            MovementType.EXIT,
+            quantity,
+            product.getStock(),
+            "Venta"
+        );
+        kardexList.add(kardex);
+        
+        // Verificar alertas de stock
+        if (product.verifyStockMinimo()) {
+            StockAlert alert = product.generateStockAlert(alertIdCounter++);
+            if (alert != null) {
+                stockAlerts.add(alert);
+                System.out.println("║    ALERTA: Stock por debajo del mínimo (" + product.getMinStock() + ")");
+            }
+        }
+        
+        double total = quantity * product.getSalePrice();
+        System.out.println("║   Venta registrada exitosamente");
+        System.out.println("║   Stock actualizado: " + product.getStock());
+        System.out.println("║   Total de venta: $" + total);
+        System.out.println("║   Movimiento de salida registrado: " + movement.getIdMovement());
+        System.out.println("╚══════════════════════════════════════════════════════════════╝");
+    }
 
-            System.out.println("Error: " + e.getMessage());
-
+    private static void addProduct() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                      AGREGAR PRODUCTO                        ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
+        String name;
+        while (true) {
+            System.out.print("║  Nombre: ");
+            name = scanner.nextLine();
+            if (name.trim().isEmpty()) {
+                System.out.println("║  Error: El nombre no puede estar vacío.");
+                continue;
+            }
+            if (!name.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+                System.out.println("║  Error: El nombre solo puede contener letras y espacios.");
+                continue;
+            }
+            break;
+        }
+        
+        System.out.print("║  Descripción: ");
+        String description = scanner.nextLine();
+        
+        double purchasePrice;
+        while (true) {
+            System.out.print("║  Precio de Compra: ");
+            purchasePrice = scanner.nextDouble();
+            if (purchasePrice <= 0) {
+                System.out.println("║  Error: El precio debe ser mayor que cero.");
+                continue;
+            }
+            break;
+        }
+        
+        double salePrice = purchasePrice * 1.50;
+        System.out.println("║  Precio de Venta calculado (50% ganancia): $" + salePrice);
+        
+        int stock;
+        while (true) {
+            System.out.print("║  Stock: ");
+            stock = scanner.nextInt();
+            if (stock < 0) {
+                System.out.println("║  Error: El stock no puede ser negativo.");
+                continue;
+            }
+            break;
+        }
+        
+        int minStock;
+        while (true) {
+            System.out.print("║  Stock Mínimo: ");
+            minStock = scanner.nextInt();
+            if (minStock < 0) {
+                System.out.println("║  Error: El stock mínimo no puede ser negativo.");
+                continue;
+            }
+            break;
+        }
+        scanner.nextLine();
+        
+        // Mostrar categorías
+        showCategories();
+        
+        Category category;
+        while (true) {
+            System.out.print("║  Ingrese el nombre de la categoría: ");
+            String categoryName = scanner.nextLine();
+            category = findCategoryByName(categoryName);
+            
+            if (category == null) {
+                System.out.println("║  Categoría no encontrada. Ingrese una categoría válida.");
+                continue;
+            }
+            
+            break;
+        }
+        
+        try {
+            Product product = new Product(
+                productIdCounter++,
+                name,
+                description,
+                salePrice,
+                purchasePrice,
+                stock,
+                minStock
+            );
+            
+            inventory.addProduct(product);
+            category.addProduct(product);
+            
+            System.out.println("║   Producto agregado exitosamente con ID: " + product.getIdProduct());
+            System.out.println("╚══════════════════════════════════════════════════════════════╝");
+            
+        } catch (InvalidProductNameException | InvalidProductPriceException | InvalidProductStockException e) {
+            System.out.println("║  Error: " + e.getMessage());
+            System.out.println("╚══════════════════════════════════════════════════════════════╝");
         }
     }
 
@@ -249,8 +529,16 @@ public class Main {
 
     private static void searchProduct() {
         System.out.println("\n--- BUSCAR PRODUCTO ---");
-        System.out.print("Nombre del producto: ");
-        String name = scanner.nextLine();
+        String name;
+        while (true) {
+            System.out.print("Nombre del producto: ");
+            name = scanner.nextLine();
+            if (name.trim().isEmpty()) {
+                System.out.println("Error: El nombre no puede estar vacío.");
+                continue;
+            }
+            break;
+        }
         Product product = inventory.searchProduct(name);
         if (product != null) {
             System.out.println("Producto encontrado:");
@@ -264,196 +552,113 @@ public class Main {
     }
 
     private static void createMovement() {
-        System.out.println("\n--- CREAR MOVIMIENTO ---");
-        System.out.println("Tipo de movimiento:");
-        System.out.println("1. ENTRADA (ENTRY)");
-        System.out.println("2. SALIDA (EXIT)");
-        System.out.print("Seleccione: ");
-        int typeOption = scanner.nextInt();
-        scanner.nextLine();
-
-        MovementType type = (typeOption == 1) ? MovementType.ENTRY : MovementType.EXIT;
-
-        Movement movement = new Movement(movementIdCounter++, type, new Date(), "");
-
-        System.out.print("Descripción: ");
-        String description = scanner.nextLine();
-        movement.setDescription(description);
-
-        System.out.println("Agregar productos al movimiento (0 para terminar):");
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                  CREAR MOVIMIENTO                            ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("║  1. ENTRADA (ENTRY)                                          ║");
+        System.out.println("║  2. SALIDA (EXIT)                                            ║");
+        System.out.println("║  0. Volver                                                   ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
+        int typeOption;
         while (true) {
-            // Show available products
-            System.out.println("\n--- PRODUCTOS DISPONIBLES ---");
-            for (Product p : inventory.showProduct()) {
-                System.out.println("ID: " + p.getIdProduct() + " | Nombre: " + p.getName() + " | Stock: " + p.getStock() + " | Precio: $" + p.getSalePrice());
-            }
+            System.out.print("║  Seleccione una opción: ");
+            typeOption = view.getIntInput();
             
-            System.out.print("\nID del producto: ");
-            int productId = scanner.nextInt();
-            if (productId == 0) break;
-
-            Product product = findProductById(productId);
-            if (product == null) {
-                System.out.println("Producto no encontrado.");
+            if (typeOption == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
                 continue;
             }
-
-            System.out.print("Cantidad: ");
-            int quantity = scanner.nextInt();
-            System.out.print("Precio unitario: ");
-            double unitPrice = scanner.nextDouble();
-            scanner.nextLine();
-
-            movement.addProductMovement(product, quantity, unitPrice);
-            System.out.println("Producto agregado al movimiento.");
-        }
-
-        movement.processMovement();
-        movements.add(movement);
-        
-        for (ProductMovement pm : movement.getProductMovementList()) {
-            Kardex kardex = new Kardex(
-                kardexIdCounter++,
-                pm.getProduct(),
-                new Date(),
-                movement.getMovementType(),
-                pm.getQuantity(),
-                pm.getProduct().getStock(),
-                movement.getDescription()
-            );
-            kardexList.add(kardex);
-        }
-        
-        // Check for stock alerts
-        for (ProductMovement pm : movement.getProductMovementList()) {
-            if (pm.getProduct().verifyStockMinimo()) {
-                StockAlert alert = pm.getProduct().generateStockAlert(alertIdCounter++);
-                if (alert != null) {
-                    stockAlerts.add(alert);
-                    System.out.println("Alerta de stock generada para: " + pm.getProduct().getName());
-                }
+            
+            if (typeOption >= 0 && typeOption <= 2) {
+                break;
             }
+            
+            System.out.println("║  Opción no válida. Debe ser 0, 1 o 2.");
         }
         
-        // Generate invoice based on movement type
-        System.out.println("\n¿Desea generar factura para este movimiento?");
-        System.out.println("1. Sí");
-        System.out.println("2. No");
-        System.out.print("Seleccione: ");
-        int invoiceOption = scanner.nextInt();
-        scanner.nextLine();
+        switch (typeOption) {
+            case 1:
+                handleEntryMovements();
+                break;
+            case 2:
+                handleExitMovements();
+                break;
+            case 0:
+                break;
+        }
+    }
+
+    private static void handleEntryMovements() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                  MOVIMIENTOS DE ENTRADA                      ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("║  1. Adquirir Producto (nuevo)                                ║");
+        System.out.println("║  2. Reabastecer Producto (existente)                         ║");
+        System.out.println("║  0. Volver                                                   ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
         
-        if (invoiceOption == 1) {
-            if (movement.getMovementType() == MovementType.ENTRY) {
-                System.out.println("\n--- GENERAR FACTURA DE COMPRA ---");
-                System.out.println("Proveedores existentes:");
-                for (Supplier s : suppliers) {
-                    System.out.println("ID: " + s.getIdSupplier() + " | Nombre: " + s.getName());
-                }
-                System.out.println("\n1. Usar proveedor existente");
-                System.out.println("2. Crear nuevo proveedor");
-                System.out.print("Seleccione: ");
-                int supplierOption = scanner.nextInt();
-                scanner.nextLine();
-                
-                Supplier supplier = null;
-                if (supplierOption == 1) {
-                    System.out.print("Ingrese ID del proveedor: ");
-                    int supplierId = scanner.nextInt();
-                    scanner.nextLine();
-                    supplier = findSupplierById(supplierId);
-                    if (supplier == null) {
-                        System.out.println("Proveedor no encontrado. Se creará uno nuevo.");
-                        supplierOption = 2;
-                    }
-                }
-                
-                if (supplierOption == 2 || supplier == null) {
-                    System.out.print("Nombre: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Teléfono: ");
-                    String phone = scanner.nextLine();
-                    System.out.print("Email: ");
-                    String email = scanner.nextLine();
-                    System.out.print("Dirección: ");
-                    String address = scanner.nextLine();
-                    
-                    supplier = new Supplier(supplierIdCounter++, name, phone, email, address);
-                    suppliers.add(supplier);
-                    System.out.println("Proveedor creado con ID: " + supplier.getIdSupplier());
-                }
-                
-                PurchaseInvoice invoice = new PurchaseInvoice( // new instanciación
-                    invoiceIdCounter++,
-                    new Date(),
-                    "INV-" + invoiceIdCounter,
-                    supplier,
-                    "PO-" + invoiceIdCounter,
-                    movement
-                );
-                invoiceView.calculateTotalPurchaseInvoice(invoice);
-                purchaseInvoices.add(invoice);
-                movement.generateInvoice(invoice);
-                invoiceView.generatePurchaseInvoice(invoice);
-                
-            } else {
-                System.out.println("\n--- GENERAR FACTURA DE VENTA ---");
-                System.out.println("Clientes existentes:");
-                for (Customer c : customers) {
-                    System.out.println("ID: " + c.getIdCustomer() + " | Nombre: " + c.getName());
-                }
-                System.out.println("\n1. Usar cliente existente");
-                System.out.println("2. Crear nuevo cliente");
-                System.out.print("Seleccione: ");
-                int customerOption = scanner.nextInt();
-                scanner.nextLine();
-                
-                Customer customer = null;
-                if (customerOption == 1) {
-                    System.out.print("Ingrese ID del cliente: ");
-                    int customerId = scanner.nextInt();
-                    scanner.nextLine();
-                    customer = findCustomerById(customerId);
-                    if (customer == null) {
-                        System.out.println("Cliente no encontrado. Se creará uno nuevo.");
-                        customerOption = 2;
-                    }
-                }
-                
-                if (customerOption == 2 || customer == null) {
-                    System.out.print("Nombre: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Teléfono: ");
-                    String phone = scanner.nextLine();
-                    System.out.print("Email: ");
-                    String email = scanner.nextLine();
-                    System.out.print("Dirección: ");
-                    String address = scanner.nextLine();
-                    
-                    customer = new Customer(customerIdCounter++, name, phone, email, address);
-                    customers.add(customer);
-                    System.out.println("Cliente creado con ID: " + customer.getIdCustomer());
-                }
-                
-                System.out.print("Método de pago: ");
-                String paymentMethod = scanner.nextLine();
-                
-                SaleInvoice invoice = new SaleInvoice( // new instanciación
-                    invoiceIdCounter++,
-                    new Date(),
-                    "INV-" + invoiceIdCounter,
-                    customer,
-                    paymentMethod,
-                    movement
-                );
-                invoiceView.calculateTotalSaleInvoice(invoice);
-                saleInvoices.add(invoice);
-                movement.generateInvoice(invoice);
-                invoiceView.generateSaleInvoice(invoice);
+        int option;
+        while (true) {
+            System.out.print("║  Seleccione una opción: ");
+            option = view.getIntInput();
+            
+            if (option == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
             }
+            
+            if (option >= 0 && option <= 2) {
+                break;
+            }
+            
+            System.out.println("║  Opción no válida. Debe ser 0, 1 o 2.");
         }
         
-        movementView.showMovement(movement);
+        switch (option) {
+            case 1:
+                adquirirProducto();
+                break;
+            case 2:
+                reabastecerProducto();
+                break;
+            case 0:
+                break;
+        }
+    }
+
+    private static void handleExitMovements() {
+        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                 MOVIMIENTOS DE SALIDA (VENTAS)               ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        System.out.println("║  Registrar venta de productos                                ║");
+        System.out.println("║  0. Volver                                                   ║");
+        System.out.println("╠══════════════════════════════════════════════════════════════╣");
+        
+        int option;
+        while (true) {
+            System.out.print("║  Seleccione una opción: ");
+            option = view.getIntInput();
+            
+            if (option == -1) {
+                System.out.println("║  Error: Debe ingresar un número.");
+                continue;
+            }
+            
+            if (option >= 0 && option <= 1) {
+                break;
+            }
+            
+            System.out.println("║  Opción no válida. Debe ser 0 o 1.");
+        }
+        
+        switch (option) {
+            case 1:
+                movimientoSalida();
+                break;
+            case 0:
+                break;
+        }
     }
 
     private static void generateReports() {

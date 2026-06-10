@@ -7,7 +7,7 @@ public class StockAlertView {
     public void checkStockLevel(StockAlert alert) {
         if (alert.getCurrentStock() <= alert.getMinStock()) {
             System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-            System.out.println("║                   ALERTA DE STOCK                          ║");
+            System.out.println("║                     ALERTA DE STOCK                          ║");
             System.out.println("╠══════════════════════════════════════════════════════════════╣");
             System.out.println("║  Producto: " + alert.getProduct().getName());
             System.out.println("║  Stock actual: " + alert.getCurrentStock());
@@ -18,7 +18,7 @@ public class StockAlertView {
 
     public void resolveAlert(StockAlert alert) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                ALERTA RESUELTA                             ║");
+        System.out.println("║                    ALERTA RESUELTA                           ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║   Producto: " + alert.getProduct().getName());
         System.out.println("║  Estado: La alerta ha sido resuelta exitosamente");
@@ -27,7 +27,7 @@ public class StockAlertView {
 
     public void showAlert(StockAlert alert) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                   ALERTA DE STOCK                          ║");
+        System.out.println("║                      ALERTA DE STOCK                         ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  ID de Alerta: " + alert.getIdAlert());
         System.out.println("║  Producto: " + alert.getProduct().getName());

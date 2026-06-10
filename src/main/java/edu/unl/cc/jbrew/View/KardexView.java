@@ -6,7 +6,7 @@ public class KardexView {
 
     public void showKardexEntry(Kardex kardex) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                  ENTRADA DE KARDEX                       ║");
+        System.out.println("║                      ENTRADA DE KARDEX                       ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  ID de Kardex: " + kardex.getIdKardex());
         System.out.println("║  Producto: " + kardex.getProduct().getName());

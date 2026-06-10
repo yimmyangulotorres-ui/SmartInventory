@@ -7,7 +7,7 @@ public class InvoiceView {
 
     public void calculateTotalPurchaseInvoice(PurchaseInvoice invoice) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              FACTURA DE COMPRA                            ║");
+        System.out.println("║                 FACTURA DE COMPRA                            ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Número de Factura: " + invoice.getInvoiceNumber());
         System.out.println("║  Calculando total...");
@@ -16,7 +16,7 @@ public class InvoiceView {
 
     public void generatePurchaseInvoice(PurchaseInvoice invoice) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              FACTURA DE COMPRA GENERADA                   ║");
+        System.out.println("║                 FACTURA DE COMPRA GENERADA                   ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Número de Factura: " + invoice.getInvoiceNumber());
         System.out.println("║  Proveedor: " + invoice.getSupplier().getName());
@@ -26,7 +26,7 @@ public class InvoiceView {
 
     public void calculateTotalSaleInvoice(SaleInvoice invoice) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              FACTURA DE VENTA                              ║");
+        System.out.println("║                FACTURA DE VENTA                              ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Número de Factura: " + invoice.getInvoiceNumber());
         System.out.println("║  Calculando total...");
@@ -35,7 +35,7 @@ public class InvoiceView {
 
     public void generateSaleInvoice(SaleInvoice invoice) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║             FACTURA DE VENTA GENERADA                     ║");
+        System.out.println("║                FACTURA DE VENTA GENERADA                     ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Número de Factura: " + invoice.getInvoiceNumber());
         System.out.println("║  Cliente: " + invoice.getCustomer().getName());

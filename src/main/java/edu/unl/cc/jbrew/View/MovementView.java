@@ -15,7 +15,7 @@ public class MovementView {
         System.out.println("║  Fecha: " + movement.getDate());
         System.out.println("║  Descripción: " + movement.getDescription());
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        System.out.println("║                PRODUCTOS DEL MOVIMIENTO                  ║");
+        System.out.println("║                   PRODUCTOS DEL MOVIMIENTO                   ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         for (ProductMovement productMovement : movement.getProductMovementList()) {
             System.out.println("║  Producto: " + productMovement.getProduct().getName());

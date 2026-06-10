@@ -9,7 +9,7 @@ public class ReportView {
 
     public void generateReportStock(Report report) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              REPORTE DE STOCK                             ║");
+        System.out.println("║                       REPORTE DE STOCK                       ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Generando reporte de stock...");
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
@@ -17,7 +17,7 @@ public class ReportView {
 
     public void generateReportSale(Report report) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              REPORTE DE VENTAS                            ║");
+        System.out.println("║                    REPORTE DE VENTAS                         ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Generando reporte de ventas...");
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
@@ -25,7 +25,7 @@ public class ReportView {
 
     public void generateReportMovements(Report report) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              REPORTE DE MOVIMIENTOS                       ║");
+        System.out.println("║                   REPORTE DE MOVIMIENTOS                     ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Generando reporte de movimientos...");
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
@@ -33,7 +33,7 @@ public class ReportView {
 
     public void consultKardex(Report report, List<Kardex> kardexList) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              CONSULTANDO KARDEX                          ║");
+        System.out.println("║                  CONSULTANDO KARDEX                          ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Consultando kardex para reporte...");
         for (Kardex kardex : kardexList) {
@@ -55,7 +55,7 @@ public class ReportView {
 
     public void exportReport(Report report) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║              EXPORTANDO REPORTE                          ║");
+        System.out.println("║                  EXPORTANDO REPORTE                          ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         System.out.println("║  Exportando reporte a archivo...");
         System.out.println("║  Exportación completada");
