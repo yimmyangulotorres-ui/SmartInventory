@@ -18,17 +18,6 @@ public class PurchaseInvoice extends Invoice { // Herencia de Invoice
         this.purchaseOrderNumber = purchaseOrderNumber;
     }
 
-    @Override
-    public void calculateTotal() {
-        if (getMovement() != null) {
-            setTotal(getMovement().calculateTotal());
-        }
-    }
-
-    @Override
-    public void generateInvoice() {
-        calculateTotal();
-    }
 
     // Getters and Setters
     public Supplier getSupplier() {

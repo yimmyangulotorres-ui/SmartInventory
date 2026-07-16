@@ -20,9 +20,15 @@ public abstract class Invoice {
         this.movement = movement;
     }
 
-    public abstract void calculateTotal();
+    public void calculateTotal() {
+        if (getMovement() != null) {
+            setTotal(getMovement().calculateTotal());
+        }
+    }
 
-    public abstract void generateInvoice();
+    public void generateInvoice() {
+        calculateTotal();
+    }
 
     // Getters and Setters
     public int getIdInvoice() {

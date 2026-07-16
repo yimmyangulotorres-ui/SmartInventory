@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import edu.unl.cc.jbrew.Domain.Inventory.Product;
-import edu.unl.cc.jbrew.Domain.Invoice.Invoice;
 import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
 
 public class Movement {
@@ -15,7 +14,6 @@ public class Movement {
     private String description;
     private List<ProductMovement> productMovementList; // Composición con ProductMovement
     private double total;
-    private Invoice invoice; // Asociación con Invoice
 
     public Movement() {
         productMovementList = new ArrayList<>();
@@ -48,23 +46,27 @@ public class Movement {
 
     public void processMovement() {
         processStockChanges();
+        registerKardexEntries();
         this.status = MovementStatus.CONFIRMED;
         calculateTotal();
     }
 
-    public void processMovementWithKardex(Kardex kardex) { // Asociación con Kardex
-        processStockChanges();
+    private void registerKardexEntries() {
         for (ProductMovement productMovement : productMovementList) {
-            productMovement.updateKardex(kardex, movementType);
+            Product product = productMovement.getProduct();
+            Kardex kardex = new Kardex(
+                product.getKardexList().size() + 1,
+                product,
+                new Date(),
+                movementType,
+                productMovement.getQuantity(),
+                product.getStock(),
+                description
+            );
+            product.addKardex(kardex);
         }
-        this.status = MovementStatus.CONFIRMED;
-        calculateTotal();
     }
 
-    public void generateInvoice(Invoice invoice) { // Asociación con Invoice
-        this.invoice = invoice;
-        invoice.generateInvoice();
-    }
 
     public void cancelMovement() {
         this.status = MovementStatus.CANCELLED;
@@ -133,13 +135,5 @@ public class Movement {
 
     public void setTotal(double total) {
         this.total = total;
-    }
-
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
     }
 }

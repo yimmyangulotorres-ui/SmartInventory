@@ -4,6 +4,9 @@ import edu.unl.cc.jbrew.Domain.Exception.InvalidProductNameException;
 import edu.unl.cc.jbrew.Domain.Exception.InvalidProductPriceException;
 import edu.unl.cc.jbrew.Domain.Exception.InvalidProductStockException;
 import edu.unl.cc.jbrew.Domain.Reports.StockAlert;
+import edu.unl.cc.jbrew.Domain.Kardex.Kardex;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
 
@@ -14,10 +17,12 @@ public class Product {
     private double purchasePrice;
     private int stock;
     private int minStock;
+    private List<Kardex> kardexList; // Relación 1 → 0..* con Kardex
 
     public Product() {
         salePrice = 0;
         purchasePrice = 0;
+        this.kardexList = new ArrayList<>();
     }
 
     public Product(int idProduct, String name, String description, double salePrice, double purchasePrice, int stock, int minStock) throws InvalidProductNameException, InvalidProductPriceException, InvalidProductStockException {
@@ -28,7 +33,8 @@ public class Product {
         this.purchasePrice = purchasePrice;
         setStock(stock);
         this.minStock = minStock;
-}
+        this.kardexList = new ArrayList<>();
+    }
     public void updateProduct(String name, Double salePrice) throws InvalidProductNameException, InvalidProductPriceException {
         setName(name);
         setSalePrice(salePrice);
@@ -132,6 +138,18 @@ public class Product {
             throw new IllegalArgumentException("El stock mínimo no puede ser negativo");
         }
         this.minStock = minStock;
+    }
+
+    public List<Kardex> getKardexList() {
+        return kardexList;
+    }
+
+    public void setKardexList(List<Kardex> kardexList) {
+        this.kardexList = kardexList;
+    }
+
+    public void addKardex(Kardex kardex) {
+        kardexList.add(kardex);
     }
 
 }

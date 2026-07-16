@@ -18,17 +18,6 @@ public class SaleInvoice extends Invoice { // Herencia de Invoice
         this.paymentMethod = paymentMethod;
     }
 
-    @Override
-    public void calculateTotal() {
-        if (getMovement() != null) {
-            setTotal(getMovement().calculateTotal());
-        }
-    }
-
-    @Override
-    public void generateInvoice() {
-        calculateTotal();
-    }
 
     public Customer getCustomer() {
         return customer;

@@ -4,12 +4,10 @@ import edu.unl.cc.jbrew.Domain.Exception.InvalidCategoryNameException;
 import edu.unl.cc.jbrew.Domain.Exception.InvalidProductNameException;
 import edu.unl.cc.jbrew.Domain.Exception.InvalidProductPriceException;
 import edu.unl.cc.jbrew.Domain.Exception.InvalidProductStockException;
-import edu.unl.cc.jbrew.Domain.Inventory.Inventory;
 import edu.unl.cc.jbrew.Domain.Inventory.Product;
 import edu.unl.cc.jbrew.Domain.Inventory.Category;
 import edu.unl.cc.jbrew.Domain.Movements.Movement;
 import edu.unl.cc.jbrew.Domain.Movements.MovementType;
-import edu.unl.cc.jbrew.Domain.Movements.ProductMovement;
 import edu.unl.cc.jbrew.Domain.Invoice.SaleInvoice;
 import edu.unl.cc.jbrew.Domain.Invoice.PurchaseInvoice;
 import edu.unl.cc.jbrew.Domain.People.Supplier;
@@ -29,7 +27,8 @@ import java.util.List;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in); // Asociación con Scanner
-    private static Inventory inventory = new Inventory(); // Composición con Inventory
+    private static List<Product> products = new ArrayList<>(); // Reemplazo de Inventory
+    private static List<Category> categories = new ArrayList<>(); // Reemplazo de Inventory
     private static View view = new View(); // Composición con View
     private static MovementView movementView = new MovementView(); // Composición con MovementView
     private static StockAlertView stockAlertView = new StockAlertView(); // Composición con StockAlertView
@@ -41,14 +40,12 @@ public class Main {
     private static List<PurchaseInvoice> purchaseInvoices = new ArrayList<>(); // Composición con PurchaseInvoice
     private static List<Supplier> suppliers = new ArrayList<>(); // Composición con Supplier
     private static List<Customer> customers = new ArrayList<>(); // Composición con Customer
-    private static List<Kardex> kardexList = new ArrayList<>(); // Composición con Kardex
     private static List<StockAlert> stockAlerts = new ArrayList<>(); // Composición con StockAlert
     private static int productIdCounter = 1;
     private static int categoryIdCounter = 1;
     private static int supplierIdCounter = 1;
     private static int customerIdCounter = 1;
     private static int movementIdCounter = 1;
-    private static int kardexIdCounter = 1;
     private static int alertIdCounter = 1;
     private static int invoiceIdCounter = 1;
 
@@ -71,7 +68,7 @@ public class Main {
                     addProduct();
                     break;
                 case 3:
-                    view.displayInventoryProductList(inventory);
+                    view.displayInventoryProductList(products);
                     break;
                 case 4:
                     showCategories();
@@ -110,7 +107,7 @@ public class Main {
 
         try{
         Category category = new Category(categoryIdCounter++, name);
-        inventory.addCategory(category);
+        categories.add(category);
         System.out.println("Categoría agregada exitosamente.");
         }
         catch (InvalidCategoryNameException e) {
@@ -207,7 +204,7 @@ public class Main {
                 minStock
             );
             
-            inventory.addProduct(product);
+            products.add(product);
             category.addProduct(product);
             
             // Crear movimiento de entrada
@@ -220,18 +217,6 @@ public class Main {
             movement.addProductMovement(product, stock, purchasePrice);
             movement.processMovement();
             movements.add(movement);
-            
-            // Crear Kardex
-            Kardex kardex = new Kardex(
-                kardexIdCounter++,
-                product,
-                new Date(),
-                MovementType.ENTRY,
-                stock,
-                stock,
-                "Adquisición de nuevo producto"
-            );
-            kardexList.add(kardex);
             
             // Generar factura de compra
             System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -318,7 +303,7 @@ public class Main {
         System.out.println("║              REABASTECER PRODUCTO (EXISTENTE)                ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         
-        view.displayInventoryProductList(inventory);
+        view.displayInventoryProductList(products);
         
         int productId;
         while (true) {
@@ -368,18 +353,6 @@ public class Main {
         movement.addProductMovement(product, quantity, product.getPurchasePrice());
         movement.processMovement();
         movements.add(movement);
-        
-        // Crear Kardex
-        Kardex kardex = new Kardex(
-            kardexIdCounter++,
-            product,
-            new Date(),
-            MovementType.ENTRY,
-            quantity,
-            product.getStock(),
-            "Reabastecimiento"
-        );
-        kardexList.add(kardex);
         
         // Generar factura de compra
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -461,7 +434,7 @@ public class Main {
         System.out.println("║                  MOVIMIENTO DE SALIDA (VENTA)                ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
         
-        view.displayInventoryProductList(inventory);
+        view.displayInventoryProductList(products);
         
         int productId;
         while (true) {
@@ -520,18 +493,6 @@ public class Main {
         movement.addProductMovement(product, quantity, product.getSalePrice());
         movement.processMovement();
         movements.add(movement);
-        
-        // Crear Kardex
-        Kardex kardex = new Kardex(
-            kardexIdCounter++,
-            product,
-            new Date(),
-            MovementType.EXIT,
-            quantity,
-            product.getStock(),
-            "Venta"
-        );
-        kardexList.add(kardex);
         
         // Generar factura de venta
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
@@ -711,7 +672,7 @@ public class Main {
                 minStock
             );
             
-            inventory.addProduct(product);
+            products.add(product);
             category.addProduct(product);
             
             System.out.println("║   Producto agregado exitosamente con ID: " + product.getIdProduct());
@@ -725,7 +686,7 @@ public class Main {
 
     private static Category findCategoryByName(String name) {
 
-        for (Category category : inventory.showCategory()) {
+        for (Category category : categories) {
 
             if (category.getName().equalsIgnoreCase(name)) {
                 return category;
@@ -736,8 +697,17 @@ public class Main {
         return null;
     }
 
+    private static Product findProductByName(String name) {
+        for (Product product : products) {
+            if (product.getName().equalsIgnoreCase(name)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
     private static void showCategories() {
-        view.displayCategoryList(inventory.showCategory());
+        view.displayCategoryList(categories);
     }
 
     private static void searchProduct() {
@@ -752,7 +722,7 @@ public class Main {
             }
             break;
         }
-        Product product = inventory.searchProduct(name);
+        Product product = findProductByName(name);
         if (product != null) {
             System.out.println("Producto encontrado:");
             System.out.println("ID: " + product.getIdProduct());
@@ -883,10 +853,10 @@ public class Main {
         
         reportView.generateReportStock(report);
         System.out.println("\n===== REPORTE DE STOCK =====");
-        System.out.println("Total de productos: " + inventory.showProduct().size());
+        System.out.println("Total de productos: " + products.size());
         int totalStock = 0;
         int lowStockCount = 0;
-        for (Product p : inventory.showProduct()) {
+        for (Product p : products) {
             totalStock += p.getStock();
             if (p.verifyStockMinimo()) {
                 lowStockCount++;
@@ -932,7 +902,11 @@ public class Main {
         System.out.println("Salidas: " + exitCount);
         
         // Kardex
-        reportView.consultKardex(report, kardexList);
+        List<Kardex> allKardex = new ArrayList<>();
+        for (Product product : products) {
+            allKardex.addAll(product.getKardexList());
+        }
+        reportView.consultKardex(report, allKardex);
         
         System.out.println("\n===== ALERTAS DE STOCK =====");
         reportView.consultStockAlerts(report, stockAlerts);
@@ -959,8 +933,10 @@ public class Main {
 
     private static void viewKardex() {
         System.out.println("\n--- KARDEX ---");
-        for (Kardex kardex : kardexList) {
-            kardexView.showKardexEntry(kardex);
+        for (Product product : products) {
+            for (Kardex kardex : product.getKardexList()) {
+                kardexView.showKardexEntry(kardex);
+            }
         }
     }
 
@@ -981,7 +957,7 @@ public class Main {
     }
 
     private static Product findProductById(int id) {
-        for (Product product : inventory.showProduct()) {
+        for (Product product : products) {
             if (product.getIdProduct() == id) {
                 return product;
             }
@@ -996,9 +972,9 @@ public class Main {
             Category alimentos = new Category(categoryIdCounter++, "Alimentos");
             Category limpieza = new Category(categoryIdCounter++, "Limpieza");
             
-            inventory.addCategory(bebidas);
-            inventory.addCategory(alimentos);
-            inventory.addCategory(limpieza);
+            categories.add(bebidas);
+            categories.add(alimentos);
+            categories.add(limpieza);
             
             // Crear productos de ejemplo
             Product cocaCola = new Product(productIdCounter++, "Coca Cola", "Refresco de cola", 2.25, 1.5, 50, 10);
@@ -1017,12 +993,12 @@ public class Main {
             limpieza.addProduct(jabon);
             
             // Agregar productos al inventario
-            inventory.addProduct(cocaCola);
-            inventory.addProduct(pepsi);
-            inventory.addProduct(agua);
-            inventory.addProduct(pan);
-            inventory.addProduct(leche);
-            inventory.addProduct(jabon);
+            products.add(cocaCola);
+            products.add(pepsi);
+            products.add(agua);
+            products.add(pan);
+            products.add(leche);
+            products.add(jabon);
             
             // Actualizar contadores
             productIdCounter = 7;

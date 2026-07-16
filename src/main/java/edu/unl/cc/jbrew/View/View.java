@@ -1,6 +1,5 @@
 package edu.unl.cc.jbrew.View;
 
-import edu.unl.cc.jbrew.Domain.Inventory.Inventory;
 import edu.unl.cc.jbrew.Domain.Inventory.Product;
 import edu.unl.cc.jbrew.Domain.Inventory.Category;
 import edu.unl.cc.jbrew.Domain.Movements.Movement;
@@ -59,11 +58,11 @@ public class View {
         }
     }
 
-    public void displayInventoryProductList(Inventory inventory) {
+    public void displayInventoryProductList(List<Product> products) {
         System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
         System.out.println("║               LISTA DE PRODUCTOS DEL INVENTARIO              ║");
         System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        for (Product product : inventory.showProduct()) {
+        for (Product product : products) {
             System.out.println("║  ID del Producto: " + product.getIdProduct());
             System.out.println("║  Nombre: " + product.getName());
             System.out.println("║  Descripción: " + product.getDescription());
@@ -71,18 +70,6 @@ public class View {
             System.out.println("║  Precio de Compra: $" + product.getPurchasePrice());
             System.out.println("║  Stock: " + product.getStock());
             System.out.println("║  Stock Mínimo: " + product.getMinStock());
-            System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        }
-        System.out.println("╚══════════════════════════════════════════════════════════════╝");
-    }
-
-    public void displayCategoryList(Inventory inventory) {
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                     LISTA DE CATEGORÍAS                      ║");
-        System.out.println("╠══════════════════════════════════════════════════════════════╣");
-        for (Category category : inventory.showCategory()) {
-            System.out.println("║  ID de Categoría: " + category.getIdCategory());
-            System.out.println("║  Nombre: " + category.getName());
             System.out.println("╠══════════════════════════════════════════════════════════════╣");
         }
         System.out.println("╚══════════════════════════════════════════════════════════════╝");
